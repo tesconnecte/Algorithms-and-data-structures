@@ -4,9 +4,14 @@
  * and open the template in the editor.
  */
 package practical.pkg2;
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Stack;
 /**
  *
@@ -107,7 +112,8 @@ public class Practical2 {
         /***************
         2.4) Queues
         ****************/
-        
-    }
+        PriorityQueue<String> maQueue = new PriorityQueue<String>();                
+        //maQueue.insert("A");
     
+    }
 }
