@@ -2,8 +2,10 @@ package Model;
 
 import java.util.*;
 
-public class AI {
+public class AI extends Player{
 
-	Collection<Piece> pieces;
-
+    public AI() {
+        super("Computer");
+    }
+    
 }

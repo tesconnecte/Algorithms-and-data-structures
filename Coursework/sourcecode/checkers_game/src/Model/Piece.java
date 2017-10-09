@@ -5,8 +5,17 @@ import java.util.ArrayList;
 public abstract class Piece {
 
 	protected Check position;
-	protected AI owner;
+	protected Player owner;
 	protected String color;
+
+        public Player getOwner() {
+            return owner;
+        }
+
+        public void setOwner(Player owner) {
+            this.owner = owner;
+        }     
+        
 
         public Piece(Check position, String color) {
             this.position = position;
@@ -29,8 +38,10 @@ public abstract class Piece {
 		this.color = color;
 	}
         
-        abstract ArrayList<Check> getPossibleMoves();
+        public abstract ArrayList<Check> getPossibleMoves();
 
-	abstract void move();
+	public abstract void move(Check arrival);
+        
+        public abstract void die();
 
 }

@@ -14,6 +14,7 @@ public class Check {
             this.gameboard = gameboard;
             
             Piece checkPiece = null;
+            
             if((lineNumber>=0)&&(lineNumber<=3)){
                 if(((lineNumber%2)==0)&&((colomnNumber%2)==1)){
                     checkPiece = new Man(this,"black",0);

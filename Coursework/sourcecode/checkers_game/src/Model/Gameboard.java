@@ -40,6 +40,24 @@ public class Gameboard {
                 return this.getGameboardChecks()[line][colomn];            
         }
         
+        public ArrayList<Piece> getPiecesByColor(String color){
+            ArrayList<Piece> colorPieces = new ArrayList<Piece>();
+            Check currentCheck;
+            Piece currentPiece;
+            for(int i=0;i<this.getNbLines();i++){
+                for(int j=0;j<this.getNbColomns();j++){
+                    currentCheck = this.getCheckByLineColomn(i, j);
+                    if(currentCheck.isOccupied()){
+                        currentPiece = currentCheck.getcheckPiece();
+                        if(currentPiece.getColor()==color){
+                            colorPieces.add(currentPiece);
+                        }                        
+                    }
+                }
+            }
+            return colorPieces;
+        }
+        
         
 
 	public void drawGameboard(){            

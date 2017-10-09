@@ -14,7 +14,15 @@ public class King extends Piece {
     }        
 
     @Override
-    public void move() {
+    public void move(Check arrival) {
         
+    }
+    
+     @Override
+    public void die(){
+        this.getPosition().setcheckPiece(null);
+        this.getOwner().deletePiece(this);
+        this.setOwner(null);
+        this.setPosition(null);
     }
 }
