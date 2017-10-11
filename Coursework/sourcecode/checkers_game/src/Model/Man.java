@@ -142,48 +142,48 @@ public class Man extends Piece {
         
         if(departureLine-arrivalLine>1){//case if White takes an adversary piece 
             int rightOrLeft  = ((arrivalColomn-departureColomn)/2);//Result will be 1 or -1 depending if it's right or left
-            Check adversaryCheck = gameboard.getCheckByLineColomn((departureLine-1),(departureColomn+rightOrLeft));
-            Piece adversaryPiece = adversaryCheck.getcheckPiece();
-            adversaryPiece.die();
-            adversaryPiece = null;
+            if((rightOrLeft==-1)||(rightOrLeft==1)){
+                Check adversaryCheck = gameboard.getCheckByLineColomn((departureLine-1),(departureColomn+rightOrLeft));
+                Piece adversaryPiece = adversaryCheck.getcheckPiece();
+                adversaryPiece.die();
+                adversaryPiece = null;
+            }
         }
         
         if(departureLine-arrivalLine<-1){//case if Blacks takes an adversary piece 
             int rightOrLeft  = ((arrivalColomn-departureColomn)/2);//Result will be 1 or -1 depending if it's right or left
-            Check adversaryCheck = gameboard.getCheckByLineColomn((departureLine+1),(departureColomn+rightOrLeft));
-            Piece adversaryPiece = adversaryCheck.getcheckPiece();
-            adversaryPiece.die();
-            adversaryPiece = null;
+            if((rightOrLeft==-1)||(rightOrLeft==1)){
+                Check adversaryCheck = gameboard.getCheckByLineColomn((departureLine+1),(departureColomn+rightOrLeft));
+                Piece adversaryPiece = adversaryCheck.getcheckPiece();
+                adversaryPiece.die();
+                adversaryPiece = null;
+            }            
         }
         
         if((dest==0)&&(arrivalLine==(gameboard.getNbLines()-1))){
-            this.toKing();
+            this.toKing(arrival);
+        } else if((dest==1)&&(arrivalLine==0)){
+            this.toKing(arrival);
+        } else {
+            this.getPosition().setcheckPiece(null);
+            this.setPosition(arrival);
+            arrival.setcheckPiece(this);
         }
-        
-        if((dest==1)&&(arrivalLine==0)){
-            this.toKing();
-        }
-        
-        
-        this.getPosition().setcheckPiece(null);
-        this.setPosition(arrival);
-        arrival.setcheckPiece(this);
     }
     
     @Override
     public void die(){
-        this.getPosition().setcheckPiece(null);
         this.getOwner().deletePiece(this);
         this.setOwner(null);
+        this.getPosition().setcheckPiece(null);        
         this.setPosition(null);
     }
     
-    public void toKing(){
-        Check position = this.getPosition();
-        King upgradedMan = new King(position,this.getColor());
+    public void toKing(Check arrivalCheck){
+        King upgradedMan = new King(arrivalCheck,this.getColor());
         upgradedMan.setOwner(this.getOwner());
         this.die();
-        position.setcheckPiece(upgradedMan);
+        arrivalCheck.setcheckPiece(upgradedMan);
         
     }
         

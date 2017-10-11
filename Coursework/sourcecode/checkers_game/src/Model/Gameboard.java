@@ -83,9 +83,17 @@ public class Gameboard {
                     System.out.print("|");
                     if(checksList[i][j].isOccupied()==true){
                         if(checksList[i][j].getcheckPiece().getColor()=="black"){
-                            System.out.print("Bl");
+                            if(checksList[i][j].getcheckPiece() instanceof King){
+                                System.out.print("KB");
+                            }else {
+                                System.out.print("mB");
+                            }                            
                         } else {
-                            System.out.print("Wh");
+                            if(checksList[i][j].getcheckPiece() instanceof King){
+                                System.out.print("KW");
+                            }else {
+                                System.out.print("mW");
+                            }   
                         }
                         //System.out.println("Case de la ligne "+(currentCheck.getLineNumber()+1)+" et de colonne "+(currentCheck.getColomnNumber()+1)+ " occupé par un pion "+currentCheck.getcheckPiece().getColor());
                     } else {                  

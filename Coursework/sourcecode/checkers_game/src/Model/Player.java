@@ -9,6 +9,7 @@ public abstract class Player {
 
     public Player(String name) {
         this.name = name;
+        this.pieces = new ArrayList<Piece>();
     }
 
     public String getName() {
@@ -20,7 +21,7 @@ public abstract class Player {
     }
     
     public void addPiece(Piece piece){
-        pieces.add(piece);
+        this.pieces.add(piece);
     }
 
     public void deletePiece(Piece piece){
@@ -28,6 +29,30 @@ public abstract class Player {
         if(index!=-1){
            this.getPieces().remove(index);
         }
+    }
+    
+    public Check chooseNextMove(ArrayList<Check> possibleMoves){
+        Scanner keyboardUSER = new Scanner(System.in);
+        int choice=0;
+        int count=1;
+        boolean rightChoice=false;
+        System.out.println("Choose the next Check :");
+        for(Check currentCheck : possibleMoves){
+            System.out.println(count+") Line: "+currentCheck.getLineNumber()+ " | Colomn: "+currentCheck.getColomnNumber());
+            count++;
+        }
+        while(!rightChoice){
+            System.out.println("Select an option above from 1 to "+count);
+            choice=(keyboardUSER.nextInt()-1);
+            if((choice>=1)&&(choice<count)){
+                rightChoice=true;
+            } else {
+                System.out.println("Wrong choice try again between 1 and "+count);
+            }
+        }
+        
+        return possibleMoves.get(choice);
+        
     }
 
 	

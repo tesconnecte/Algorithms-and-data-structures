@@ -6,6 +6,7 @@
 package checkers_game;
 import Model.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  *
@@ -36,7 +37,64 @@ public class Checkers_game {
             me.addPiece(currentPiece);
         }
         
-        Piece test1 = mainGameboard.getCheckByLineColomn(6, 1).getcheckPiece();
+        boolean hasWon = false;
+        Scanner keyboard = new Scanner(System.in);
+        int line;
+        int colomn;
+        Piece currentPiece;
+        ArrayList<Check> possiblemoves;
+        Check destination;
+        
+        while(!hasWon){
+            System.out.println(computer.getName()+"'s turn. Select the piece you wan to move");
+            System.out.print("Piece's line : ");
+            line = (keyboard.nextInt()-1);
+            System.out.print("Piece's colomn : ");
+            colomn = (keyboard.nextInt()-1);
+            currentPiece=mainGameboard.getCheckByLineColomn(line, colomn).getcheckPiece();
+            possiblemoves=currentPiece.getPossibleMoves();
+            System.out.println("Possible moves for this piece :");
+            for(Check possibleCheck : possiblemoves){
+                System.out.println("Line : "+(possibleCheck.getLineNumber()+1)+" | Colomn : "+(possibleCheck.getColomnNumber()+1));
+            }
+            System.out.print("New Check's line : ");
+            line = (keyboard.nextInt()-1);
+            System.out.print("New Check's colomn : ");
+            colomn = (keyboard.nextInt()-1);
+            destination = mainGameboard.getCheckByLineColomn(line, colomn);
+            currentPiece.move(destination);
+            mainGameboard.drawGameboard();
+            /*
+            Player Change
+            */
+            System.out.println(me.getName()+"'s turn. Select the piece you wan to move");
+            System.out.print("Piece's line : ");
+            line = (keyboard.nextInt()-1);
+            System.out.print("Piece's colomn : ");
+            colomn = (keyboard.nextInt()-1);
+            currentPiece=mainGameboard.getCheckByLineColomn(line, colomn).getcheckPiece();
+            possiblemoves=currentPiece.getPossibleMoves();
+            System.out.println("Possible moves for this piece :");
+            for(Check possibleCheck : possiblemoves){
+                System.out.println("Line : "+(possibleCheck.getLineNumber()+1)+" | Colomn : "+(possibleCheck.getColomnNumber()+1));
+            }
+            System.out.print("New Check's line : ");
+            line = (keyboard.nextInt()-1);
+            System.out.print("New Check's colomn : ");
+            colomn = (keyboard.nextInt()-1);
+            destination = mainGameboard.getCheckByLineColomn(line, colomn);
+            currentPiece.move(destination);
+            mainGameboard.drawGameboard();
+            
+            if((computer.getPieces().isEmpty())||(me.getPieces().isEmpty())){
+                System.out.println("END OF THE GAME");
+                hasWon=true;
+            }
+                   
+            
+        }
+        
+       /* Piece test1 = mainGameboard.getCheckByLineColomn(6, 1).getcheckPiece();
         Piece test2 = mainGameboard.getCheckByLineColomn(7, 2).getcheckPiece();
         
         if(test1 instanceof Man){
@@ -58,9 +116,9 @@ public class Checkers_game {
             }
             
             test1.move(test1moves.get(0));
-            mainGameboard.drawGameboard();*/
+            mainGameboard.drawGameboard();
             
-        }
+        }*/
         
         
     }
