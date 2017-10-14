@@ -25,6 +25,12 @@ public class Man extends Piece {
 	public void setDestination(int destination) {
 		this.destination = destination;
 	}
+        
+        @Override
+        public ArrayList<Check> getRifleMove(){
+            
+            return null;
+        }
 
     @Override
     public ArrayList<Check> getPossibleMoves() {
@@ -35,11 +41,12 @@ public class Man extends Piece {
      int nbGameboardColomns = (gameboard.getNbColomns()-1);//Minus 1 to match array storage which starts at 0
      int dest = this.getDestination();
      Check currentOption;
+     Check backwardCaptureOption;
      ArrayList<Check> possibleMoves = new ArrayList<Check>();
      ArrayList<Check> occupiedChecks = new ArrayList<Check>();
      
      switch (dest){
-         case 0://Case 0 : From gameboard's top to bottom
+         case 0://Case 0 : For pieces from gameboard's top to bottom
                 if(positionLine<nbGameboardLines){
                     if(positionColomn>0){
                             currentOption = gameboard.getCheckByLineColomn((positionLine+1),(positionColomn-1));
@@ -55,6 +62,23 @@ public class Man extends Piece {
                                 possibleMoves.add(currentOption);
                             } else {
                                 occupiedChecks.add(currentOption);
+                            }
+                    }
+                }
+                //Cases of back capture
+                if(positionLine>1){
+                    if(positionColomn>1){
+                            currentOption = gameboard.getCheckByLineColomn((positionLine-1),(positionColomn-1));
+                            backwardCaptureOption = gameboard.getCheckByLineColomn((positionLine-2),(positionColomn-2));
+                            if((currentOption.isOccupied())&&(!backwardCaptureOption.isOccupied())){
+                                possibleMoves.add(backwardCaptureOption);
+                            }
+                    }             
+                    if(positionColomn<(nbGameboardColomns-1)){
+                            currentOption = gameboard.getCheckByLineColomn((positionLine-1),(positionColomn+1));
+                            backwardCaptureOption = gameboard.getCheckByLineColomn((positionLine-2),(positionColomn+2));
+                            if((currentOption.isOccupied())&&(!backwardCaptureOption.isOccupied())){
+                                possibleMoves.add(backwardCaptureOption);
                             }
                     }
                 }
@@ -77,6 +101,24 @@ public class Man extends Piece {
                                 possibleMoves.add(currentOption);
                             } else {
                                 occupiedChecks.add(currentOption);
+                            }
+                    }
+                }
+                
+                //Cases of back capture
+                if(positionLine<(nbGameboardLines-1)){
+                    if(positionColomn>1){
+                            currentOption = gameboard.getCheckByLineColomn((positionLine+1),(positionColomn-1));
+                            backwardCaptureOption = gameboard.getCheckByLineColomn((positionLine+2),(positionColomn-2));
+                            if((currentOption.isOccupied())&&(!backwardCaptureOption.isOccupied())){
+                                possibleMoves.add(backwardCaptureOption);
+                            }
+                    }             
+                    if(positionColomn<(nbGameboardColomns-1)){
+                            currentOption = gameboard.getCheckByLineColomn((positionLine+1),(positionColomn+1));
+                            backwardCaptureOption = gameboard.getCheckByLineColomn((positionLine+2),(positionColomn+2));
+                            if((currentOption.isOccupied())&&(!backwardCaptureOption.isOccupied())){
+                                possibleMoves.add(backwardCaptureOption);
                             }
                     }
                 }

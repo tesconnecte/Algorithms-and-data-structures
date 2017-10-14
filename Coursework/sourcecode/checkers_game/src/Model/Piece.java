@@ -39,6 +39,8 @@ public abstract class Piece {
 	}
         
         public abstract ArrayList<Check> getPossibleMoves();
+        
+        public abstract ArrayList<Check> getRifleMove();
 
 	public abstract void move(Check arrival);
         

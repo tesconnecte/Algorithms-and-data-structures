@@ -18,6 +18,12 @@ public class King extends Piece {
         
     }
     
+    @Override
+        public ArrayList<Check> getRifleMove(){
+            
+            return null;
+        }
+    
      @Override
     public void die(){
         this.getPosition().setcheckPiece(null);
