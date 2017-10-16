@@ -38,20 +38,20 @@ public abstract class Player {
         boolean rightChoice=false;
         System.out.println("Choose the next Check :");
         for(Check currentCheck : possibleMoves){
-            System.out.println(count+") Line: "+currentCheck.getLineNumber()+ " | Colomn: "+currentCheck.getColomnNumber());
+            System.out.println(count+") Line: "+(currentCheck.getLineNumber()+1)+ " | Colomn: "+(currentCheck.getColomnNumber()+1));
             count++;
         }
         while(!rightChoice){
-            System.out.println("Select an option above from 1 to "+count);
-            choice=(keyboardUSER.nextInt()-1);
+            System.out.println("Select an option above from 1 to "+(count-1));
+            choice=(keyboardUSER.nextInt());
             if((choice>=1)&&(choice<count)){
                 rightChoice=true;
             } else {
-                System.out.println("Wrong choice try again between 1 and "+count);
+                System.out.println("Wrong choice try again between 1 and "+(count-1));
             }
         }
         
-        return possibleMoves.get(choice);
+        return possibleMoves.get((choice-1));
         
     }
 

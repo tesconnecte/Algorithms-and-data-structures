@@ -15,6 +15,26 @@ public class Check {
             
             Piece checkPiece = null;
             
+            if(lineNumber==4){
+                if((colomnNumber==6)||(colomnNumber==8)){
+                    checkPiece = new Man(this,"black",0);
+                    this.checkPiece=checkPiece;
+                }
+            }else if(lineNumber==6){
+                if((colomnNumber==4)||(colomnNumber==6)){
+                    checkPiece = new Man(this,"black",0);
+                    this.checkPiece=checkPiece;
+                }
+            } else if((lineNumber==7)&&(colomnNumber==7)){
+                checkPiece = new Man(this,"white",0);
+                this.checkPiece=checkPiece;
+            }else if((lineNumber==8)&&(colomnNumber==8)){
+                checkPiece = new Man(this,"black",0);
+                this.checkPiece=checkPiece;
+            } else {
+                this.checkPiece=checkPiece;
+            }
+            /*
             if((lineNumber>=0)&&(lineNumber<=3)){
                 if(((lineNumber%2)==0)&&((colomnNumber%2)==1)){
                     checkPiece = new Man(this,"black",0);
@@ -37,7 +57,7 @@ public class Check {
                     }
             } else {
                 this.checkPiece=checkPiece;
-            }
+            }*/
         }
 
         public Piece getcheckPiece() {

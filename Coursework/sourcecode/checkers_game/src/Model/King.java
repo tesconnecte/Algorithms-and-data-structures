@@ -19,10 +19,20 @@ public class King extends Piece {
     }
     
     @Override
-        public ArrayList<Check> getRifleMove(){
-            
+        public ArrayList<Check> getFrontMove(){
             return null;
         }
+        
+        @Override
+        public ArrayList<Check> getBackCaptureMove(){
+            return null;
+        }
+    
+    @Override
+    public Tree<Check> getRifleMove(Tree<Check> possibilities){
+            
+        return null;
+    }
     
      @Override
     public void die(){

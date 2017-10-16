@@ -27,150 +27,216 @@ public class Man extends Piece {
 	}
         
         @Override
-        public ArrayList<Check> getRifleMove(){
+        public Tree<Check> getRifleMove(Tree<Check> possibilities){
+            Man fakeManForResult = new Man(possibilities.getData(),"Fk",this.getDestination());
+            ArrayList<Check> nextPossibleMoves = new ArrayList<Check>();
+            nextPossibleMoves.addAll(fakeManForResult.getFrontCaptureMove());
+            nextPossibleMoves.addAll(fakeManForResult.getBackCaptureMove());
+            fakeManForResult = null;
+            Tree<Check> newChildTree;
+            for(Check currentCheck : nextPossibleMoves){
+                if(((possibilities.getParent()!=null)&&(currentCheck!=possibilities.getParent().getData()))||(possibilities.getParent()==null)){
+                    newChildTree = new Tree<Check>(currentCheck);
+                    possibilities.addChild(newChildTree);
+                }           
+            }
+            for(Tree currentTree : possibilities.getChildren()){
+                getRifleMove(currentTree);
+            }
             
-            return null;
+            return possibilities;
+            
+            /*if((frontPossibleMoves.isEmpty())&&(backPossibleMoves.isEmpty())){
+                return possibilities;
+            } else {
+                Tree<Check> newChildTree;
+                for(Check currentCheck : frontPossibleMoves){
+                    newChildTree = new Tree<Check>(currentCheck);
+                    getRifleMove(newChildTree);
+                    possibilities.addChild(newChildTree);
+                    
+                }
+                
+                for(Check currentCheck : backPossibleMoves){
+                    newChildTree = new Tree<Check>(currentCheck);
+                    getRifleMove(newChildTree);
+                    possibilities.addChild(newChildTree);
+                }
+                
+                return possibilities;
+            }*/
+        }
+        
+        @Override
+        public ArrayList<Check> getFrontMove(){
+           int positionLine = this.getPosition().getLineNumber();
+           int positionColomn = this.getPosition().getColomnNumber();
+           Gameboard gameboard = this.getPosition().getGameboard();
+           int nbGameboardLines = (gameboard.getNbLines()-1);//Minus 1 to match array storage which starts at 0
+           int nbGameboardColomns = (gameboard.getNbColomns()-1);//Minus 1 to match array storage which starts at 0
+           int dest = this.getDestination();
+           Check currentOption;
+           Check backwardCaptureOption;
+           ArrayList<Check> possibleMoves = new ArrayList<Check>();
+
+           switch (dest){
+               case 0://Case 0 : For pieces from gameboard's top to bottom
+                      if(positionLine<nbGameboardLines){
+                          if(positionColomn>0){
+                                  currentOption = gameboard.getCheckByLineColomn((positionLine+1),(positionColomn-1));
+                                  if(!currentOption.isOccupied()){
+                                      possibleMoves.add(currentOption);
+                                  }
+                          }             
+                          if(positionColomn<nbGameboardColomns){
+                                  currentOption = gameboard.getCheckByLineColomn((positionLine+1),(positionColomn+1));
+                                  if(!currentOption.isOccupied()){
+                                      possibleMoves.add(currentOption);
+                                  } 
+                          }
+                      }
+                    break;
+
+               case 1://Case 1 : From gameboard's bottom to top
+                      if(positionLine>0){
+                          if(positionColomn>0){
+                                  currentOption = gameboard.getCheckByLineColomn((positionLine-1),(positionColomn-1));
+                                  if(!currentOption.isOccupied()){
+                                      possibleMoves.add(currentOption);
+                                  }
+                          }
+
+                          if(positionColomn<nbGameboardColomns){
+                                  currentOption = gameboard.getCheckByLineColomn((positionLine-1),(positionColomn+1));
+                                  if(!currentOption.isOccupied()){
+                                      possibleMoves.add(currentOption);
+                                  }
+                          }
+                      }
+                      break;       
+
+           }
+           return possibleMoves;            
+        }
+        
+        public ArrayList<Check> getFrontCaptureMove(){
+            int positionLine = this.getPosition().getLineNumber();
+            int positionColomn = this.getPosition().getColomnNumber();
+            Gameboard gameboard = this.getPosition().getGameboard();
+            int nbGameboardLines = (gameboard.getNbLines()-1);//Minus 1 to match array storage which starts at 0
+            int nbGameboardColomns = (gameboard.getNbColomns()-1);//Minus 1 to match array storage which starts at 0
+            int dest = this.getDestination();
+            Check middleOption;
+            Check captureOption;
+            ArrayList<Check> possibleMoves = new ArrayList<Check>();
+            
+            switch(dest){
+            case 0:
+                if(positionLine<(nbGameboardLines-1)){
+                    if(positionColomn>1){
+                        middleOption = gameboard.getCheckByLineColomn((positionLine+1),(positionColomn-1));
+                        captureOption = gameboard.getCheckByLineColomn((positionLine+2),(positionColomn-2));
+                        if((middleOption.isOccupied())&&(middleOption.getcheckPiece().getColor()!=this.getColor())&&(!captureOption.isOccupied())){
+                            possibleMoves.add(captureOption);
+                        }
+                    }             
+                    if(positionColomn<(nbGameboardColomns-1)){
+                        middleOption = gameboard.getCheckByLineColomn((positionLine+1),(positionColomn+1));
+                        captureOption = gameboard.getCheckByLineColomn((positionLine+2),(positionColomn+2));
+                        if((middleOption.isOccupied())&&(middleOption.getcheckPiece().getColor()!=this.getColor())&&(!captureOption.isOccupied())){
+                            possibleMoves.add(captureOption);
+                        }
+                    }
+                }
+            break;            
+            case 1:
+                if(positionLine>1){
+                    if(positionColomn>1){
+                            middleOption = gameboard.getCheckByLineColomn((positionLine-1),(positionColomn-1));
+                            captureOption = gameboard.getCheckByLineColomn((positionLine-2),(positionColomn-2));
+                            if((middleOption.isOccupied())&&(middleOption.getcheckPiece().getColor()!=this.getColor())&&(!captureOption.isOccupied())){
+                                possibleMoves.add(captureOption);
+                            }
+                    }             
+                    if(positionColomn<(nbGameboardColomns-1)){
+                            middleOption = gameboard.getCheckByLineColomn((positionLine-1),(positionColomn+1));
+                            captureOption = gameboard.getCheckByLineColomn((positionLine-2),(positionColomn+2));
+                            if((middleOption.isOccupied())&&(middleOption.getcheckPiece().getColor()!=this.getColor())&&(!captureOption.isOccupied())){
+                                possibleMoves.add(captureOption);
+                            }
+                    }
+                }
+            break;
+            }
+        return possibleMoves;
+        }
+        
+        @Override
+        public ArrayList<Check> getBackCaptureMove(){
+            int positionLine = this.getPosition().getLineNumber();
+            int positionColomn = this.getPosition().getColomnNumber();
+            Gameboard gameboard = this.getPosition().getGameboard();
+            int nbGameboardLines = (gameboard.getNbLines()-1);//Minus 1 to match array storage which starts at 0
+            int nbGameboardColomns = (gameboard.getNbColomns()-1);//Minus 1 to match array storage which starts at 0
+            int dest = this.getDestination();
+            Check middleOption;
+            Check backwardCaptureOption;
+            ArrayList<Check> possibleMoves = new ArrayList<Check>();
+            
+            switch(dest){
+            case 0:
+                if(positionLine>1){
+                    if(positionColomn>1){
+                        middleOption = gameboard.getCheckByLineColomn((positionLine-1),(positionColomn-1));
+                        backwardCaptureOption = gameboard.getCheckByLineColomn((positionLine-2),(positionColomn-2));
+                        if((middleOption.isOccupied())&&(middleOption.getcheckPiece().getColor()!=this.getColor())&&(!backwardCaptureOption.isOccupied())){
+                            possibleMoves.add(backwardCaptureOption);
+                        }
+                    }             
+                    if(positionColomn<(nbGameboardColomns-1)){
+                        middleOption = gameboard.getCheckByLineColomn((positionLine-1),(positionColomn+1));
+                        backwardCaptureOption = gameboard.getCheckByLineColomn((positionLine-2),(positionColomn+2));
+                        if((middleOption.isOccupied())&&(middleOption.getcheckPiece().getColor()!=this.getColor())&&(!backwardCaptureOption.isOccupied())){
+                            possibleMoves.add(backwardCaptureOption);
+                        }
+                    }
+                }
+            break;            
+            case 1:
+                if(positionLine<(nbGameboardLines-1)){
+                    if(positionColomn>1){
+                            middleOption = gameboard.getCheckByLineColomn((positionLine+1),(positionColomn-1));
+                            backwardCaptureOption = gameboard.getCheckByLineColomn((positionLine+2),(positionColomn-2));
+                            if((middleOption.isOccupied())&&(middleOption.getcheckPiece().getColor()!=this.getColor())&&(!backwardCaptureOption.isOccupied())){
+                                possibleMoves.add(backwardCaptureOption);
+                            }
+                    }             
+                    if(positionColomn<(nbGameboardColomns-1)){
+                            middleOption = gameboard.getCheckByLineColomn((positionLine+1),(positionColomn+1));
+                            backwardCaptureOption = gameboard.getCheckByLineColomn((positionLine+2),(positionColomn+2));
+                            if((middleOption.isOccupied())&&(middleOption.getcheckPiece().getColor()!=this.getColor())&&(!backwardCaptureOption.isOccupied())){
+                                possibleMoves.add(backwardCaptureOption);
+                            }
+                    }
+                }
+            break;
+            }
+        return possibleMoves;
         }
 
     @Override
     public ArrayList<Check> getPossibleMoves() {
-     int positionLine = this.getPosition().getLineNumber();
-     int positionColomn = this.getPosition().getColomnNumber();
-     Gameboard gameboard = this.getPosition().getGameboard();
-     int nbGameboardLines = (gameboard.getNbLines()-1);//Minus 1 to match array storage which starts at 0
-     int nbGameboardColomns = (gameboard.getNbColomns()-1);//Minus 1 to match array storage which starts at 0
-     int dest = this.getDestination();
-     Check currentOption;
-     Check backwardCaptureOption;
-     ArrayList<Check> possibleMoves = new ArrayList<Check>();
-     ArrayList<Check> occupiedChecks = new ArrayList<Check>();
+        Tree<Check> rootCurrentPosition = new Tree<Check>(this.getPosition());
+        Tree<Check> riffle;
+        riffle = this.getRifleMove(rootCurrentPosition);
+        riffle.drawTree();
      
-     switch (dest){
-         case 0://Case 0 : For pieces from gameboard's top to bottom
-                if(positionLine<nbGameboardLines){
-                    if(positionColomn>0){
-                            currentOption = gameboard.getCheckByLineColomn((positionLine+1),(positionColomn-1));
-                            if(!currentOption.isOccupied()){
-                                possibleMoves.add(currentOption);
-                            } else {
-                                occupiedChecks.add(currentOption);
-                            }
-                    }             
-                    if(positionColomn<nbGameboardColomns){
-                            currentOption = gameboard.getCheckByLineColomn((positionLine+1),(positionColomn+1));
-                            if(!currentOption.isOccupied()){
-                                possibleMoves.add(currentOption);
-                            } else {
-                                occupiedChecks.add(currentOption);
-                            }
-                    }
-                }
-                //Cases of back capture
-                if(positionLine>1){
-                    if(positionColomn>1){
-                            currentOption = gameboard.getCheckByLineColomn((positionLine-1),(positionColomn-1));
-                            backwardCaptureOption = gameboard.getCheckByLineColomn((positionLine-2),(positionColomn-2));
-                            if((currentOption.isOccupied())&&(!backwardCaptureOption.isOccupied())){
-                                possibleMoves.add(backwardCaptureOption);
-                            }
-                    }             
-                    if(positionColomn<(nbGameboardColomns-1)){
-                            currentOption = gameboard.getCheckByLineColomn((positionLine-1),(positionColomn+1));
-                            backwardCaptureOption = gameboard.getCheckByLineColomn((positionLine-2),(positionColomn+2));
-                            if((currentOption.isOccupied())&&(!backwardCaptureOption.isOccupied())){
-                                possibleMoves.add(backwardCaptureOption);
-                            }
-                    }
-                }
-              break;
-         
-         case 1://Case 1 : From gameboard's bottom to top
-                if(positionLine>0){
-                    if(positionColomn>0){
-                            currentOption = gameboard.getCheckByLineColomn((positionLine-1),(positionColomn-1));
-                            if(!currentOption.isOccupied()){
-                                possibleMoves.add(currentOption);
-                            } else {
-                                occupiedChecks.add(currentOption);
-                            }
-                    }
+        ArrayList<Check> possibleMoves = new ArrayList<Check>();
+        possibleMoves.addAll(this.getFrontMove());
+        possibleMoves.addAll(this.getFrontCaptureMove());
+        possibleMoves.addAll(this.getBackCaptureMove());
 
-                    if(positionColomn<nbGameboardColomns){
-                            currentOption = gameboard.getCheckByLineColomn((positionLine-1),(positionColomn+1));
-                            if(!currentOption.isOccupied()){
-                                possibleMoves.add(currentOption);
-                            } else {
-                                occupiedChecks.add(currentOption);
-                            }
-                    }
-                }
-                
-                //Cases of back capture
-                if(positionLine<(nbGameboardLines-1)){
-                    if(positionColomn>1){
-                            currentOption = gameboard.getCheckByLineColomn((positionLine+1),(positionColomn-1));
-                            backwardCaptureOption = gameboard.getCheckByLineColomn((positionLine+2),(positionColomn-2));
-                            if((currentOption.isOccupied())&&(!backwardCaptureOption.isOccupied())){
-                                possibleMoves.add(backwardCaptureOption);
-                            }
-                    }             
-                    if(positionColomn<(nbGameboardColomns-1)){
-                            currentOption = gameboard.getCheckByLineColomn((positionLine+1),(positionColomn+1));
-                            backwardCaptureOption = gameboard.getCheckByLineColomn((positionLine+2),(positionColomn+2));
-                            if((currentOption.isOccupied())&&(!backwardCaptureOption.isOccupied())){
-                                possibleMoves.add(backwardCaptureOption);
-                            }
-                    }
-                }
-                break;         
-             
-     }
-
-     if(!occupiedChecks.isEmpty()){
-         int currentOccupiedCheckLine;
-         int currentOccupiedCheckColomn;
-         for(Check currentOccupiedCheck : occupiedChecks){
-             currentOccupiedCheckLine = currentOccupiedCheck.getLineNumber();
-             currentOccupiedCheckColomn = currentOccupiedCheck.getColomnNumber();
-            switch (dest) {
-                case 0 :
-                    if((currentOccupiedCheck.getcheckPiece().getColor()!=this.getColor())&&(currentOccupiedCheckLine<nbGameboardLines)){//Occupied Check not same color + not out of gameboard range 
-                       int rightOrLeft = currentOccupiedCheckColomn-positionColomn;//Indicate wether the occupied check is right or left diagonal
-                       if((rightOrLeft==-1)&&(currentOccupiedCheckColomn>0)){//Left case
-                               currentOption = gameboard.getCheckByLineColomn((currentOccupiedCheckLine+1),(currentOccupiedCheckColomn-1));
-                               if(!currentOption.isOccupied()){
-                                   possibleMoves.add(currentOption);
-                               }
-                       }             
-                       if((rightOrLeft==1)&&(currentOccupiedCheckColomn<nbGameboardColomns)){//Right case
-                               currentOption = gameboard.getCheckByLineColomn((currentOccupiedCheckLine+1),(currentOccupiedCheckColomn+1));
-                               if(!currentOption.isOccupied()){
-                                   possibleMoves.add(currentOption);
-                               }
-                       }
-                   }
-                   break;
-                case 1 :
-                    if((currentOccupiedCheck.getcheckPiece().getColor()!=this.getColor())&&(currentOccupiedCheckLine>0)){//Occupied Check not same color + not out of gameboard range 
-                       int rightOrLeft = currentOccupiedCheckColomn-positionColomn;//Indicate wether the occupied check is right or left diagonal
-                       if((rightOrLeft==-1)&&(currentOccupiedCheckColomn>0)){//Left case
-                               currentOption = gameboard.getCheckByLineColomn((currentOccupiedCheckLine-1),(currentOccupiedCheckColomn-1));
-                               if(!currentOption.isOccupied()){
-                                   possibleMoves.add(currentOption);
-                               }
-                       }             
-                       if((rightOrLeft==1)&&(currentOccupiedCheckColomn<nbGameboardColomns)){//Right case
-                               currentOption = gameboard.getCheckByLineColomn((currentOccupiedCheckLine-1),(currentOccupiedCheckColomn+1));
-                               if(!currentOption.isOccupied()){
-                                   possibleMoves.add(currentOption);
-                               }
-                       }
-                   }
-                    break;
-            }
-         }
-     }
-     return possibleMoves;
+        return possibleMoves;
     }        
 
     @Override
