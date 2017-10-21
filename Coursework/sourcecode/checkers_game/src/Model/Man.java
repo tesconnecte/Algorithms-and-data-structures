@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 public class Man extends Piece {
 
 	/**
-	 * 2 directions possible :
+	 * 2 possible directions :
 	 *  - 0 : From top of the gameboard to the bottom
 	 *  - 1 : From bottom of the gameboard to the top
 	 */
@@ -26,8 +26,8 @@ public class Man extends Piece {
 		this.destination = destination;
 	}
         
-        @Override
-        public Tree<Check> getRifleMove(Tree<Check> possibilities){
+    @Override
+    public Tree<Check> getRifleMove( Tree<Check> possibilities){
             Man fakeManForResult = new Man(possibilities.getData(),"Fk",this.getDestination());
             ArrayList<Check> nextPossibleMoves = new ArrayList<Check>();
             nextPossibleMoves.addAll(fakeManForResult.getFrontCaptureMove());
@@ -45,30 +45,9 @@ public class Man extends Piece {
             }
             
             return possibilities;
-            
-            /*if((frontPossibleMoves.isEmpty())&&(backPossibleMoves.isEmpty())){
-                return possibilities;
-            } else {
-                Tree<Check> newChildTree;
-                for(Check currentCheck : frontPossibleMoves){
-                    newChildTree = new Tree<Check>(currentCheck);
-                    getRifleMove(newChildTree);
-                    possibilities.addChild(newChildTree);
-                    
-                }
-                
-                for(Check currentCheck : backPossibleMoves){
-                    newChildTree = new Tree<Check>(currentCheck);
-                    getRifleMove(newChildTree);
-                    possibilities.addChild(newChildTree);
-                }
-                
-                return possibilities;
-            }*/
         }
         
-        @Override
-        public ArrayList<Check> getFrontMove(){
+    public ArrayList<Check> getFrontMove(){
            int positionLine = this.getPosition().getLineNumber();
            int positionColomn = this.getPosition().getColomnNumber();
            Gameboard gameboard = this.getPosition().getGameboard();
@@ -119,7 +98,7 @@ public class Man extends Piece {
            return possibleMoves;            
         }
         
-        public ArrayList<Check> getFrontCaptureMove(){
+    public ArrayList<Check> getFrontCaptureMove(){
             int positionLine = this.getPosition().getLineNumber();
             int positionColomn = this.getPosition().getColomnNumber();
             Gameboard gameboard = this.getPosition().getGameboard();
@@ -171,8 +150,7 @@ public class Man extends Piece {
         return possibleMoves;
         }
         
-        @Override
-        public ArrayList<Check> getBackCaptureMove(){
+    public ArrayList<Check> getBackCaptureMove(){
             int positionLine = this.getPosition().getLineNumber();
             int positionColomn = this.getPosition().getColomnNumber();
             Gameboard gameboard = this.getPosition().getGameboard();
@@ -206,7 +184,7 @@ public class Man extends Piece {
                 if(positionLine<(nbGameboardLines-1)){
                     if(positionColomn>1){
                             middleOption = gameboard.getCheckByLineColomn((positionLine+1),(positionColomn-1));
-                            backwardCaptureOption = gameboard.getCheckByLineColomn((positionLine+2),(positionColomn-2));
+                            backwardCaptureOption = gameboard.getCheckByLineColomn((positionLine+2),(positionColomn-2));                            
                             if((middleOption.isOccupied())&&(middleOption.getcheckPiece().getColor()!=this.getColor())&&(!backwardCaptureOption.isOccupied())){
                                 possibleMoves.add(backwardCaptureOption);
                             }
@@ -230,6 +208,14 @@ public class Man extends Piece {
         Tree<Check> riffle;
         riffle = this.getRifleMove(rootCurrentPosition);
         riffle.drawTree();
+        ArrayList<Check> longestRiffle = riffle.getLongestTreePath();
+        System.out.println("Longest riffle possible : ");
+        int checkNumber = 1;
+        for(Check currentCheck : longestRiffle){
+            System.out.println("Check "+checkNumber+" on line "+(currentCheck.getLineNumber()+1)+" and colomn "+ (currentCheck.getColomnNumber()+1));
+            checkNumber++;
+
+        }
      
         ArrayList<Check> possibleMoves = new ArrayList<Check>();
         possibleMoves.addAll(this.getFrontMove());

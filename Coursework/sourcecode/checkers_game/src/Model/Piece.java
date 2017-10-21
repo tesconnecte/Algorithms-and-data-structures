@@ -38,10 +38,6 @@ public abstract class Piece {
 		this.color = color;
 	}
         
-        public abstract ArrayList<Check> getFrontMove();
-        
-        public abstract ArrayList<Check> getBackCaptureMove();
-        
         public abstract ArrayList<Check> getPossibleMoves();
         
         public abstract Tree<Check> getRifleMove(Tree<Check> possibilities);

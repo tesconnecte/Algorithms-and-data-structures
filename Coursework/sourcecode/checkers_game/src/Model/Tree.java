@@ -6,6 +6,7 @@
 package Model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -31,6 +32,12 @@ public class Tree<T> {
         Tree<T> newChild = new Tree<>(data);
         newChild.setParent(this);
         children.add(newChild);
+    }
+    
+    public void removeFirstChild(){
+        if(this.getChildren().size()>0){
+            this.getChildren().remove(0);
+        }
     }
 
     public void addChildren(ArrayList<Tree> children) {
@@ -60,7 +67,42 @@ public class Tree<T> {
         return parent;
     }
     
-    //public [][int,ArrayList<Check>]
+    public ArrayList<T> getLongestTreePath(){
+        ArrayList<ArrayList> paths = new ArrayList<ArrayList>();
+        Tree currentTree = this;
+        ArrayList<T> currentPath = new ArrayList<T>();
+        while(currentTree!=null){
+            if(currentTree==this){
+                currentPath = new ArrayList<T>();
+            }
+            currentPath.add((T)currentTree.getData());
+            
+            if(currentTree.getChildren().size()>0){
+                currentTree=(Tree)currentTree.getChildren().get(0);
+            } else {
+                currentTree=currentTree.getParent();
+                if(currentTree!=null){
+                    currentTree.removeFirstChild();
+                    currentTree=this;
+                }
+                paths.add(currentPath);
+            }           
+            
+        }
+        
+        ArrayList<T> result = new ArrayList<T>();
+        
+        for(ArrayList currentArray : paths){
+            if(currentArray.size()>result.size()){
+                result = currentArray;
+            }
+        }
+        
+        return result;        
+        
+        }
+    
+ 
     
     public void drawTree(){
         if(this.getData() instanceof Check){
