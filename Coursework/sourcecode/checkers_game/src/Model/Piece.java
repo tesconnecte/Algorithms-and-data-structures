@@ -44,6 +44,16 @@ public abstract class Piece {
 
 	public abstract void move(Check arrival);
         
-        public abstract void die();
+        public void disapear(){
+            this.getPosition().setcheckPiece(null);        
+            this.setPosition(null);
+        }
+        
+        public void die(){
+        this.getOwner().deletePiece(this);
+        this.setOwner(null);
+        this.getPosition().setcheckPiece(null);        
+        this.setPosition(null);
+    }
 
 }

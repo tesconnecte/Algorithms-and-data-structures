@@ -17,25 +17,24 @@ public class Check {
             /*
             Test Code            
             */
-            /*if(lineNumber==3){
-                if((colomnNumber==6)||(colomnNumber==8)){
-                    checkPiece = new Man(this,"black",0);
-                    this.checkPiece=checkPiece;
-                }
-            }else if(lineNumber==1){
-                if(colomnNumber==4){
-                    checkPiece = new Man(this,"black",0);
-                    this.checkPiece=checkPiece;
-                }
-            } else if((lineNumber==2)&&(colomnNumber==9)){
-                checkPiece = new Man(this,"white",0);
+            if((lineNumber==2)&&(colomnNumber==3)){
+                checkPiece = new Man(this,"black",0);
+                this.checkPiece=checkPiece;
+            }else if((lineNumber==1)&&(colomnNumber==6)){
+                checkPiece = new Man(this,"black",0);
+                this.checkPiece=checkPiece;
+            }else if((lineNumber==6)&&(colomnNumber==5)){
+                checkPiece = new Man(this,"black",0);
+                this.checkPiece=checkPiece;
+            } else if((lineNumber==9)&&(colomnNumber==2)){
+                checkPiece = new King(this,"white");
                 this.checkPiece=checkPiece;
             } else {
                 this.checkPiece=checkPiece;
-            }*/
+            }
             /*
             End test code
-            */            
+            *//*            
             if((lineNumber>=0)&&(lineNumber<=3)){
                 if(((lineNumber%2)==0)&&((colomnNumber%2)==1)){
                     checkPiece = new Man(this,"black",0);
@@ -58,7 +57,7 @@ public class Check {
                     }
             } else {
                 this.checkPiece=checkPiece;
-            }
+            }*/
         }
 
         public Piece getcheckPiece() {

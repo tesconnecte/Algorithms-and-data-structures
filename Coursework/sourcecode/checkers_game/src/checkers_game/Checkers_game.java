@@ -20,7 +20,7 @@ public class Checkers_game {
     public static void main(String[] args) {
         // TODO code application logic here
         System.out.println(" Checkers Game / Le jeu de dames\n_________________________________\n");
-        Gameboard mainGameboard = new Gameboard();
+        final Gameboard mainGameboard = new Gameboard();
         Human me = new Human("Alexis");
         AI computer = new AI();
         mainGameboard.drawGameboard();

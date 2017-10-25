@@ -265,13 +265,13 @@ public class Man extends Piece {
         }
     }
     
-    @Override
+    /*@Override
     public void die(){
         this.getOwner().deletePiece(this);
         this.setOwner(null);
         this.getPosition().setcheckPiece(null);        
         this.setPosition(null);
-    }
+    }*/
     
     public void toKing(Check arrivalCheck){
         King upgradedMan = new King(arrivalCheck,this.getColor());
