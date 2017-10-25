@@ -1,6 +1,7 @@
 package Model;
+import java.io.Serializable;
 
-public class Check {
+public class Check implements Serializable{
 
 	Piece checkPiece;
 	private int lineNumber;
@@ -17,16 +18,34 @@ public class Check {
             /*
             Test Code            
             */
-            if((lineNumber==2)&&(colomnNumber==3)){
+            if((lineNumber==1)&&(colomnNumber==2)){
                 checkPiece = new Man(this,"black",0);
                 this.checkPiece=checkPiece;
-            }else if((lineNumber==1)&&(colomnNumber==6)){
+            }else if((lineNumber==1)&&(colomnNumber==4)){
                 checkPiece = new Man(this,"black",0);
                 this.checkPiece=checkPiece;
-            }else if((lineNumber==6)&&(colomnNumber==5)){
+            } else if((lineNumber==2)&&(colomnNumber==5)){
+                checkPiece = new King(this,"black");
+                this.checkPiece=checkPiece;
+            }else if((lineNumber==2)&&(colomnNumber==7)){
+                checkPiece = new King(this,"black");
+                this.checkPiece=checkPiece;
+            }else if((lineNumber==3)&&(colomnNumber==2)){
                 checkPiece = new Man(this,"black",0);
                 this.checkPiece=checkPiece;
-            } else if((lineNumber==9)&&(colomnNumber==2)){
+            } else if((lineNumber==4)&&(colomnNumber==3)){
+                checkPiece = new King(this,"black");
+                this.checkPiece=checkPiece;
+            }else if((lineNumber==4)&&(colomnNumber==7)){
+                checkPiece = new King(this,"black");
+                this.checkPiece=checkPiece;
+            }else if((lineNumber==5)&&(colomnNumber==7)){
+                checkPiece = new King(this,"black");
+                this.checkPiece=checkPiece;
+            }else if((lineNumber==6)&&(colomnNumber==1)){
+                checkPiece = new King(this,"black");
+                this.checkPiece=checkPiece;
+            }else if((lineNumber==7)&&(colomnNumber==0)){
                 checkPiece = new King(this,"white");
                 this.checkPiece=checkPiece;
             } else {

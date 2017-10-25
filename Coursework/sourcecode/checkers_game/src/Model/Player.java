@@ -1,8 +1,9 @@
 package Model;
 
 import java.util.*;
+import java.io.Serializable;
 
-public abstract class Player {
+public abstract class Player implements Serializable{
     
     protected ArrayList<Piece> pieces;
     protected String name;

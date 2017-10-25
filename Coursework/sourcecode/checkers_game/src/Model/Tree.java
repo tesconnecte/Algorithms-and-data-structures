@@ -67,7 +67,7 @@ public class Tree<T> {
         return parent;
     }
     
-    public ArrayList<T> getLongestTreePath(){
+    public ArrayList<ArrayList> getLongestTreePath(){
         ArrayList<ArrayList> paths = new ArrayList<ArrayList>();
         Tree currentTree = this;
         ArrayList<T> currentPath = new ArrayList<T>();
@@ -90,11 +90,16 @@ public class Tree<T> {
             
         }
         
-        ArrayList<T> result = new ArrayList<T>();
+        ArrayList<ArrayList> result = new ArrayList<ArrayList>();
+        ArrayList<T> emptyArrayList = new ArrayList<>();
+        result.add(emptyArrayList);        
         
         for(ArrayList currentArray : paths){
-            if(currentArray.size()>result.size()){
-                result = currentArray;
+            if(currentArray.size()>result.get(0).size()){
+                result.removeAll(result);
+                result.add(currentArray);
+            }else if(currentArray.size()==result.get(0).size()){
+                result.add(currentArray);
             }
         }
         

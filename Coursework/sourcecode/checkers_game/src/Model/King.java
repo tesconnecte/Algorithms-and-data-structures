@@ -1,37 +1,122 @@
 package Model;
-
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class King extends Piece {
+public class King extends Piece implements Serializable{
 
     public King(Check position, String color) {
         super(position, color);
     }
     
-    public ArrayList<Check> getKingCapture(){
+    @Override
+    public Tree<Check> getRifleMove(Tree<Check> possibilities,Gameboard gameboard){
+       // System.out.println("\nROOT of check line "+(possibilities.getData().getLineNumber()+1)+" and colomn "+(possibilities.getData().getColomnNumber()+1));
+            Gameboard copyGameboard = (Gameboard)DeepCopy.copy(gameboard);
+            Gameboard originalGameboard = possibilities.getData().getGameboard();
+            Check loopCheck;
+            Tree<Check> loopTree = possibilities;
+            while(loopTree.getParent()!=null){
+                loopCheck = (Check)possibilities.getParent().getData();
+                originalGameboard = loopCheck.getGameboard();
+                loopTree = loopTree.getParent();
+            }
+            
+            Check previousCheckOnOldGameboard = (Check)possibilities.getData();
+            Check previousCheckOnNewGameboard = copyGameboard.getCheckByLineColomn(previousCheckOnOldGameboard.getLineNumber(), previousCheckOnOldGameboard.getColomnNumber());
+            Check currentCheck = copyGameboard.getCheckByLineColomn(possibilities.getData().getLineNumber(), possibilities.getData().getColomnNumber());
+            King currentKing;
+            if(possibilities.getParent()!=null){
+                previousCheckOnOldGameboard = (Check)possibilities.getParent().getData();
+                previousCheckOnNewGameboard = copyGameboard.getCheckByLineColomn(previousCheckOnOldGameboard.getLineNumber(), previousCheckOnOldGameboard.getColomnNumber());
+                /*On the new copied gameboard, we copy the King to its new position*/
+                previousCheckOnNewGameboard.getcheckPiece().setPosition(currentCheck);
+                currentCheck.setcheckPiece(previousCheckOnNewGameboard.getcheckPiece());
+                previousCheckOnNewGameboard.setcheckPiece(null);
+                currentKing = (King)currentCheck.getcheckPiece();
+            }else {//1st case, King does not need to be moved
+                currentKing = (King)currentCheck.getcheckPiece();
+            }
+            
+            HashMap<Check,Gameboard> nextPossibleMoves = new HashMap<Check,Gameboard>();
+            /*ArrayList<Check> possiblePreviousPosition = new ArrayList<>();
+            if(possibilities.getParent()!=null){
+                Check parentCheck = (Check)possibilities.getParent().getData();
+                Check thisCheck = (Check)possibilities.getData();
+                int offsetLine = thisCheck.getLineNumber()-parentCheck.getLineNumber();
+                int offsetColomn = thisCheck.getColomnNumber()-parentCheck.getColomnNumber();
+                if(offsetLine>0){
+                    if(offsetColomn>0){
+                        possiblePreviousPosition.addAll(fakeKingForResult.getIntervalCheck(1, parentCheck));
+                    }else if (offsetColomn<0){
+                        possiblePreviousPosition.addAll(fakeKingForResult.getIntervalCheck(2, parentCheck));
+                    }
+                } else if (offsetLine<0){
+                    if(offsetColomn>0){
+                        possiblePreviousPosition.addAll(fakeKingForResult.getIntervalCheck(3, parentCheck));
+                    }else if (offsetColomn<0){
+                        possiblePreviousPosition.addAll(fakeKingForResult.getIntervalCheck(4, parentCheck));
+                    }
+                }
+            }*/
+
+            /*for(Check currentCheck : possiblePreviousPosition){
+               // System.err.println("Line "+(currentCheck.getLineNumber()+1)+" colomn "+ (currentCheck.getColomnNumber()+1));
+            }*/
+            nextPossibleMoves.putAll(currentKing.getKingCapture(copyGameboard));
+            Tree<Check> newChildTree;
+            
+            
+            
+            for(Check currentPossibleNextCheck : nextPossibleMoves.keySet()){
+                //System.out.println("CHILD of check line "+(currentCheck.getLineNumber()+1)+" and colomn "+(currentCheck.getColomnNumber()+1));
+
+                //if((possiblePreviousPosition.isEmpty())||(!possiblePreviousPosition.contains(currentCheck))){
+                    newChildTree = new Tree<Check>(originalGameboard.getCheckByLineColomn(currentPossibleNextCheck.getLineNumber(), currentPossibleNextCheck.getColomnNumber()));
+                    possibilities.addChild(newChildTree);
+                //}           
+            }
+            
+            Check keyCheck;
+            Check treeCheck;
+            for(Tree currentTree : possibilities.getChildren()){
+                treeCheck = (Check)currentTree.getData();
+                keyCheck = copyGameboard.getCheckByLineColomn(treeCheck.getLineNumber(), treeCheck.getColomnNumber());
+                getRifleMove(currentTree,nextPossibleMoves.get(keyCheck));
+            }
+            
+            return possibilities;
+    }
+    
+    public HashMap<Check,Gameboard> getKingCapture(Gameboard gameboard){
         int positionLine = this.getPosition().getLineNumber();
         int positionColomn = this.getPosition().getColomnNumber();
-        Gameboard gameboard = this.getPosition().getGameboard();
         int nbGameboardLines = (gameboard.getNbLines()-1);//Minus 1 to match array storage which starts at 0
         int nbGameboardColomns = (gameboard.getNbColomns()-1);//Minus 1 to match array storage which starts at 0
         Check currentOption;
-        ArrayList<Check> possibleCaptures = new ArrayList<Check>();
+        Piece adversaryPiece;
+        HashMap<Check,Gameboard> possibleCaptures = new HashMap<Check,Gameboard>();
+        Gameboard copyGameboard;
         boolean isFree;
 
         /*Diagonal 1*/
         while(((positionLine-1)>=0)&&((positionColomn-1)>=0)){
             currentOption = gameboard.getCheckByLineColomn((positionLine-1), (positionColomn-1));
             if(currentOption.isOccupied()){
+                adversaryPiece = currentOption.getcheckPiece();
                 positionLine--;
                 positionColomn--;
-                if(currentOption.getcheckPiece().getColor()!=this.getColor()){
+                if(adversaryPiece.getColor()!=this.getColor()){
+                    copyGameboard = (Gameboard)DeepCopy.copy(gameboard);
+                    copyGameboard.getCheckByLineColomn(currentOption.getLineNumber(), currentOption.getColomnNumber()).getcheckPiece().disapear();
                     isFree  = true;
                     while((isFree)&&((positionLine-1)>=0)&&((positionColomn-1)>=0)){
                         currentOption = gameboard.getCheckByLineColomn((positionLine-1), (positionColomn-1));
                         if(currentOption.isOccupied()){
                             isFree=false;
                         }else{
-                            possibleCaptures.add(currentOption);
+                            possibleCaptures.put(currentOption, copyGameboard);
+
                         }
                         positionLine--;
                         positionColomn--;
@@ -50,16 +135,19 @@ public class King extends Piece {
         while(((positionLine-1)>=0)&&((positionColomn+1)<=nbGameboardColomns)){
             currentOption = gameboard.getCheckByLineColomn((positionLine-1), (positionColomn+1));
             if(currentOption.isOccupied()){
+                adversaryPiece = currentOption.getcheckPiece();                
                 positionLine--;
                 positionColomn++;
-                if(currentOption.getcheckPiece().getColor()!=this.getColor()){
+                if(adversaryPiece.getColor()!=this.getColor()){
+                    copyGameboard = (Gameboard)DeepCopy.copy(gameboard);
+                    copyGameboard.getCheckByLineColomn(currentOption.getLineNumber(), currentOption.getColomnNumber()).getcheckPiece().disapear();
                     isFree  = true;                    
                     while((isFree)&&((positionLine-1)>=0)&&((positionColomn+1)<=nbGameboardColomns)){
                         currentOption = gameboard.getCheckByLineColomn((positionLine-1),(positionColomn+1));
                         if(currentOption.isOccupied()){
                             isFree=false;
                         }else{
-                            possibleCaptures.add(currentOption);
+                            possibleCaptures.put(currentOption, copyGameboard);
                         }
                         positionLine--;
                         positionColomn++;
@@ -78,16 +166,19 @@ public class King extends Piece {
         while(((positionLine+1)<=nbGameboardLines)&&((positionColomn-1)>=0)){
             currentOption = gameboard.getCheckByLineColomn((positionLine+1), (positionColomn-1));
             if(currentOption.isOccupied()){
+                adversaryPiece = currentOption.getcheckPiece();              
                 positionLine++;
                 positionColomn--;
-                if(currentOption.getcheckPiece().getColor()!=this.getColor()){
+                if(adversaryPiece.getColor()!=this.getColor()){
+                    copyGameboard = (Gameboard)DeepCopy.copy(gameboard);
+                    copyGameboard.getCheckByLineColomn(currentOption.getLineNumber(), currentOption.getColomnNumber()).getcheckPiece().disapear();
                     isFree  = true;                    
                     while((isFree)&&((positionLine+1)<=nbGameboardLines)&&((positionColomn-1)>=0)){
                         currentOption = gameboard.getCheckByLineColomn((positionLine+1),(positionColomn-1));
                         if(currentOption.isOccupied()){
                             isFree=false;
                         }else{
-                            possibleCaptures.add(currentOption);
+                            possibleCaptures.put(currentOption, copyGameboard);
                         }
                         positionLine++;
                         positionColomn--;
@@ -107,16 +198,19 @@ public class King extends Piece {
         while((isFree)&&((positionLine+1)<=nbGameboardLines)&&((positionColomn+1)<=nbGameboardColomns)){
             currentOption = gameboard.getCheckByLineColomn((positionLine+1), (positionColomn+1));
             if(currentOption.isOccupied()){
+                adversaryPiece = currentOption.getcheckPiece();          
                 positionLine++;
                 positionColomn++;
-                if(currentOption.getcheckPiece().getColor()!=this.getColor()){
+                if(adversaryPiece.getColor()!=this.getColor()){
+                    copyGameboard = (Gameboard)DeepCopy.copy(gameboard);
+                    copyGameboard.getCheckByLineColomn(currentOption.getLineNumber(), currentOption.getColomnNumber()).getcheckPiece().disapear();
                     isFree  = true;                   
                     while((isFree)&&((positionLine+1)<=nbGameboardLines)&&((positionColomn+1)<=nbGameboardColomns)){
                         currentOption = gameboard.getCheckByLineColomn((positionLine+1),(positionColomn+1));
                         if(currentOption.isOccupied()){
                             isFree=false;
                         }else{
-                            possibleCaptures.add(currentOption);
+                            possibleCaptures.put(currentOption, copyGameboard);
                         }
                         positionLine++;
                         positionColomn++;
@@ -210,76 +304,105 @@ public class King extends Piece {
         Tree<Check> riffle;
         Gameboard gameboardcopy = new Gameboard();
         gameboardcopy=this.getPosition().getGameboard();
-        riffle = this.getRifleMove(rootCurrentPosition);
+        riffle = this.getRifleMove(rootCurrentPosition,this.getPosition().getGameboard());
         riffle.drawTree();
-        ArrayList<Check> longestRiffle = riffle.getLongestTreePath();
-        System.out.println("Longest riffle possible : ");
-        int checkNumber = 1;
-        for(Check currentCheck : longestRiffle){
-            System.out.println("Check "+checkNumber+" on line "+(currentCheck.getLineNumber()+1)+" and colomn "+ (currentCheck.getColomnNumber()+1));
-            checkNumber++;
-
+        ArrayList<ArrayList> longestRiffle = riffle.getLongestTreePath();
+        System.out.println("Longest riffle(s) possible : ");
+        int riffleNumber=1;
+        int checkNumber;
+        for(ArrayList<Check> currentArrayList : longestRiffle){
+            System.out.println("\n-------------------------\n\nRiffle number "+riffleNumber);
+            checkNumber=1;
+            for(Check currentCheck : currentArrayList){
+                System.out.println("Check "+checkNumber+" on line "+(currentCheck.getLineNumber()+1)+" and colomn "+ (currentCheck.getColomnNumber()+1));
+                checkNumber++;
+            }
+            riffleNumber++;
         }
-        System.out.print(this.getPosition());
+        
         this.getPosition().getGameboard().drawGameboard();
-     
-       /* ArrayList<Check> possibleMoves = new ArrayList<Check>();
-        possibleMoves.addAll(this.getKingMove());*/
 
         return null;
     }        
 
     @Override
     public void move(Check arrival) {
+        Gameboard gameboard = this.getPosition().getGameboard();
+        int currentLine = this.getPosition().getLineNumber();
+        int currentColomn = this.getPosition().getColomnNumber();
+        int limitLine = arrival.getLineNumber();
+        int limitColomn = arrival.getColomnNumber();
+        Check currentOption;
+        int offsetLine = limitLine-currentLine;
+        int offsetColomn = limitColomn-currentColomn;
+        int diagonal;
         
+        if((offsetLine>0)&&(offsetColomn>0)){
+            diagonal = 1;
+        } else if((offsetLine>0)&&(offsetColomn<0)){
+            diagonal = 2;
+        } else if ((offsetLine<0)&&(offsetColomn>0)){
+            diagonal = 3;
+        } else {
+            diagonal = 4;
+        }
+        
+        
+        switch(diagonal){
+            case 1:
+                while(((currentLine-1)>=limitLine)&&((currentColomn-1)>=limitColomn)){
+                    currentOption = gameboard.getCheckByLineColomn((currentLine-1), (currentColomn-1));
+                    if(currentOption.isOccupied()){
+                        currentOption.getcheckPiece().die();
+                    }
+                    currentLine--;
+                    currentColomn--;
+                }
+            break;   
+            
+            case 2:
+                while(((currentLine-1)>=limitLine)&&((currentColomn+1)<=limitColomn)){
+                    currentOption = gameboard.getCheckByLineColomn((currentLine-1), (currentColomn+1));
+                    if(currentOption.isOccupied()){
+                        currentOption.getcheckPiece().die();
+                    }
+                    currentLine--;
+                    currentColomn++;
+                }
+            break;
+            
+            case 3:
+                while(((currentLine+1)<=limitLine)&&((currentColomn-1)>=limitColomn)){
+                    currentOption = gameboard.getCheckByLineColomn((currentLine+1), (currentColomn-1));
+                    if(currentOption.isOccupied()){
+                        currentOption.getcheckPiece().die();
+                    }
+                    currentLine++;
+                    currentColomn--;
+                }
+            break;
+            
+            case 4:
+                while(((currentLine+1)<=limitLine)&&((currentColomn+1)<=limitColomn)){
+                    currentOption = gameboard.getCheckByLineColomn((currentLine+1), (currentColomn+1));
+                    if(currentOption.isOccupied()){
+                        currentOption.getcheckPiece().die();
+                    }
+                    currentLine++;
+                    currentColomn++;
+                }    
+            break;
+        }        
+        this.getPosition().setcheckPiece(null);
+        this.setPosition(arrival);
+        arrival.setcheckPiece(this);
     }
     
     @Override
-    public Tree<Check> getRifleMove(Tree<Check> possibilities){
-       // System.out.println("\nROOT of check line "+(possibilities.getData().getLineNumber()+1)+" and colomn "+(possibilities.getData().getColomnNumber()+1));
-            King fakeKingForResult = new King(possibilities.getData(),this.getColor());
-            ArrayList<Check> nextPossibleMoves = new ArrayList<Check>();
-            ArrayList<Check> possiblePreviousPosition = new ArrayList<>();
-            if(possibilities.getParent()!=null){
-                Check parentCheck = (Check)possibilities.getParent().getData();
-                Check thisCheck = (Check)possibilities.getData();
-                int offsetLine = thisCheck.getLineNumber()-parentCheck.getLineNumber();
-                int offsetColomn = thisCheck.getColomnNumber()-parentCheck.getColomnNumber();
-                if(offsetLine>0){
-                    if(offsetColomn>0){
-                        possiblePreviousPosition.addAll(fakeKingForResult.getIntervalCheck(1, parentCheck));
-                    }else if (offsetColomn<0){
-                        possiblePreviousPosition.addAll(fakeKingForResult.getIntervalCheck(2, parentCheck));
-                    }
-                } else if (offsetLine<0){
-                    if(offsetColomn>0){
-                        possiblePreviousPosition.addAll(fakeKingForResult.getIntervalCheck(3, parentCheck));
-                    }else if (offsetColomn<0){
-                        possiblePreviousPosition.addAll(fakeKingForResult.getIntervalCheck(4, parentCheck));
-                    }
-                }
-            }
-
-            for(Check currentCheck : possiblePreviousPosition){
-               // System.err.println("Line "+(currentCheck.getLineNumber()+1)+" colomn "+ (currentCheck.getColomnNumber()+1));
-            }
-            nextPossibleMoves.addAll(fakeKingForResult.getKingCapture());
-            fakeKingForResult = null;
-            Tree<Check> newChildTree;
-            
-            for(Check currentCheck : nextPossibleMoves){
-                //System.out.println("CHILD of check line "+(currentCheck.getLineNumber()+1)+" and colomn "+(currentCheck.getColomnNumber()+1));
-
-                if((possiblePreviousPosition.isEmpty())||(!possiblePreviousPosition.contains(currentCheck))){
-                    newChildTree = new Tree<Check>(currentCheck);
-                    possibilities.addChild(newChildTree);
-                }           
-            }
-            for(Tree currentTree : possibilities.getChildren()){
-                getRifleMove(currentTree);
-            }
-            
-            return possibilities;
+    public void riffleMove(ArrayList<Check> path) {
+        for(Check currentCheck : path){
+            this.move(currentCheck);
+        }
     }
     
     public ArrayList<Check> getIntervalCheck(int diagonal,Check limit){
@@ -299,6 +422,8 @@ public class King extends Piece {
                     currentLine--;
                     currentColomn--;
                 }
+            break;   
+            
             case 2:
                 while(((currentLine-1)>=limitLine)&&((currentColomn+1)<=limitColomn)){
                     currentOption = gameboard.getCheckByLineColomn((currentLine-1), (currentColomn+1));
@@ -306,6 +431,8 @@ public class King extends Piece {
                     currentLine--;
                     currentColomn++;
                 }
+            break;
+            
             case 3:
                 while(((currentLine+1)<=limitLine)&&((currentColomn-1)>=limitColomn)){
                     currentOption = gameboard.getCheckByLineColomn((currentLine+1), (currentColomn-1));
@@ -313,6 +440,8 @@ public class King extends Piece {
                     currentLine++;
                     currentColomn--;
                 }
+            break;
+            
             case 4:
                 while(((currentLine+1)<=limitLine)&&((currentColomn+1)<=limitColomn)){
                     currentOption = gameboard.getCheckByLineColomn((currentLine+1), (currentColomn+1));
@@ -325,12 +454,6 @@ public class King extends Piece {
         
         return result;
     }
+
     
-   /* @Override
-    public void die(){
-        this.getPosition().setcheckPiece(null);
-        this.getOwner().deletePiece(this);
-        this.setOwner(null);
-        this.setPosition(null);
-    }*/
 }

@@ -4,12 +4,13 @@
  * and open the template in the editor.
  */
 package Model;
+import java.io.Serializable;
 
 /**
  *
  * @author alexi_000
  */
-public class Human extends Player{
+public class Human extends Player implements Serializable{
 
     public Human(String name) {
         super(name);

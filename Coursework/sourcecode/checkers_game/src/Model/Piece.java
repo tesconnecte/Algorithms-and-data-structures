@@ -1,8 +1,9 @@
 package Model;
 
 import java.util.ArrayList;
+import java.io.Serializable;
 
-public abstract class Piece {
+public abstract class Piece implements Serializable{
 
 	protected Check position;
 	protected Player owner;
@@ -40,9 +41,11 @@ public abstract class Piece {
         
         public abstract ArrayList<Check> getPossibleMoves();
         
-        public abstract Tree<Check> getRifleMove(Tree<Check> possibilities);
+        public abstract Tree<Check> getRifleMove(Tree<Check> possibilities,Gameboard gameboard);
 
 	public abstract void move(Check arrival);
+        
+        public abstract void riffleMove(ArrayList<Check> path);
         
         public void disapear(){
             this.getPosition().setcheckPiece(null);        

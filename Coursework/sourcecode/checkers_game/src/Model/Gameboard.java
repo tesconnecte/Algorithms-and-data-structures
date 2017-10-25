@@ -1,8 +1,9 @@
 package Model;
 
 import java.util.*;
+import java.io.Serializable;
 
-public class Gameboard {
+public class Gameboard implements Serializable{
 
 	private int nbLines;
 	private int nbColomns;
@@ -19,7 +20,6 @@ public class Gameboard {
                     this.gameboardChecks[i][j]=(currentCheck);
                 }
             }
-            
         }
         
         
