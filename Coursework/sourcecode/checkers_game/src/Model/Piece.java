@@ -2,6 +2,7 @@ package Model;
 
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.HashMap;
 
 public abstract class Piece implements Serializable{
 
@@ -39,7 +40,7 @@ public abstract class Piece implements Serializable{
 		this.color = color;
 	}
         
-        public abstract ArrayList<Check> getPossibleMoves();
+        public abstract HashMap<ArrayList,Integer> getPossibleMoves();
         
         public abstract Tree<Check> getRifleMove(Tree<Check> possibilities,Gameboard gameboard);
 

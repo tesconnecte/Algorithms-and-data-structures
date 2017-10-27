@@ -39,42 +39,14 @@ public class King extends Piece implements Serializable{
             }
             
             HashMap<Check,Gameboard> nextPossibleMoves = new HashMap<Check,Gameboard>();
-            /*ArrayList<Check> possiblePreviousPosition = new ArrayList<>();
-            if(possibilities.getParent()!=null){
-                Check parentCheck = (Check)possibilities.getParent().getData();
-                Check thisCheck = (Check)possibilities.getData();
-                int offsetLine = thisCheck.getLineNumber()-parentCheck.getLineNumber();
-                int offsetColomn = thisCheck.getColomnNumber()-parentCheck.getColomnNumber();
-                if(offsetLine>0){
-                    if(offsetColomn>0){
-                        possiblePreviousPosition.addAll(fakeKingForResult.getIntervalCheck(1, parentCheck));
-                    }else if (offsetColomn<0){
-                        possiblePreviousPosition.addAll(fakeKingForResult.getIntervalCheck(2, parentCheck));
-                    }
-                } else if (offsetLine<0){
-                    if(offsetColomn>0){
-                        possiblePreviousPosition.addAll(fakeKingForResult.getIntervalCheck(3, parentCheck));
-                    }else if (offsetColomn<0){
-                        possiblePreviousPosition.addAll(fakeKingForResult.getIntervalCheck(4, parentCheck));
-                    }
-                }
-            }*/
-
-            /*for(Check currentCheck : possiblePreviousPosition){
-               // System.err.println("Line "+(currentCheck.getLineNumber()+1)+" colomn "+ (currentCheck.getColomnNumber()+1));
-            }*/
             nextPossibleMoves.putAll(currentKing.getKingCapture(copyGameboard));
             Tree<Check> newChildTree;
             
             
             
             for(Check currentPossibleNextCheck : nextPossibleMoves.keySet()){
-                //System.out.println("CHILD of check line "+(currentCheck.getLineNumber()+1)+" and colomn "+(currentCheck.getColomnNumber()+1));
-
-                //if((possiblePreviousPosition.isEmpty())||(!possiblePreviousPosition.contains(currentCheck))){
                     newChildTree = new Tree<Check>(originalGameboard.getCheckByLineColomn(currentPossibleNextCheck.getLineNumber(), currentPossibleNextCheck.getColomnNumber()));
-                    possibilities.addChild(newChildTree);
-                //}           
+                    possibilities.addChild(newChildTree);         
             }
             
             Check keyCheck;
@@ -299,30 +271,57 @@ public class King extends Piece implements Serializable{
     }
     
     @Override
-    public ArrayList<Check> getPossibleMoves() {
+    public HashMap<ArrayList,Integer> getPossibleMoves() {
+        /**
+         *We return a HashMap<ArrayList,Integer>
+         * The ArrayList corresponds to a set of possible checks :
+         *      - For a simple move or a simple capture it will only be one check
+         *      - For a riffle, it includes all the necessary Checks to realize it
+         * Integer corresponds to the move type :
+         *      - 0: Simple move or simple capture move
+         *      - 1: Simple capture move
+         *      - 2: Riffle move
+         * 
+         * If a riffle is possible, The player has no other choice to do it
+         * If multiple riffle are possible, The player must move its piece which can realize the longest riffle
+         * If there are no riffle possible, Then we check if there are capture possible, If it is, the player has no other choice to do it
+         * If there are no riffle or simple capture possible, we check if there are simple moves possible. 
+         */
+        HashMap<ArrayList,Integer> results = new HashMap<ArrayList,Integer>();
+        
         Tree<Check> rootCurrentPosition = new Tree<Check>(this.getPosition());
         Tree<Check> riffle;
-        Gameboard gameboardcopy = new Gameboard();
-        gameboardcopy=this.getPosition().getGameboard();
         riffle = this.getRifleMove(rootCurrentPosition,this.getPosition().getGameboard());
-        riffle.drawTree();
         ArrayList<ArrayList> longestRiffle = riffle.getLongestTreePath();
-        System.out.println("Longest riffle(s) possible : ");
-        int riffleNumber=1;
-        int checkNumber;
-        for(ArrayList<Check> currentArrayList : longestRiffle){
-            System.out.println("\n-------------------------\n\nRiffle number "+riffleNumber);
-            checkNumber=1;
-            for(Check currentCheck : currentArrayList){
-                System.out.println("Check "+checkNumber+" on line "+(currentCheck.getLineNumber()+1)+" and colomn "+ (currentCheck.getColomnNumber()+1));
-                checkNumber++;
-            }
-            riffleNumber++;
-        }
+        ArrayList<Check> captureMoves = new ArrayList<Check>();
+        ArrayList<Check> simpleMoves = new ArrayList<Check>();
+        ArrayList<Check> newMoveToAdd;
+        Gameboard gameboardCopy;
         
-        this.getPosition().getGameboard().drawGameboard();
-
-        return null;
+        if((!longestRiffle.isEmpty())&&(longestRiffle.get(0)).size()>2){// Must be > 2 to be consider as a riffle, else where it's a simple capture
+            for(ArrayList currentRifle : longestRiffle){
+                    results.put(currentRifle, 2);             
+            }
+        } else {            
+            gameboardCopy = (Gameboard)DeepCopy.copy(this.getPosition().getGameboard());            
+            captureMoves.addAll(this.getKingCapture(gameboardCopy).keySet());
+            if(!captureMoves.isEmpty()){
+                for(Check currentCheck : captureMoves){
+                    newMoveToAdd = new ArrayList<Check>();
+                    newMoveToAdd.add(currentCheck);
+                    results.put(newMoveToAdd,1);
+                }
+            }else{
+                simpleMoves.addAll(this.getKingMove());
+                for(Check currentCheck : captureMoves){
+                    newMoveToAdd = new ArrayList<Check>();
+                    newMoveToAdd.add(currentCheck);
+                    results.put(newMoveToAdd,0);
+                }                
+            }           
+            
+        }      
+        return results;
     }        
 
     @Override
@@ -338,13 +337,13 @@ public class King extends Piece implements Serializable{
         int diagonal;
         
         if((offsetLine>0)&&(offsetColomn>0)){
-            diagonal = 1;
-        } else if((offsetLine>0)&&(offsetColomn<0)){
-            diagonal = 2;
-        } else if ((offsetLine<0)&&(offsetColomn>0)){
-            diagonal = 3;
-        } else {
             diagonal = 4;
+        } else if((offsetLine>0)&&(offsetColomn<0)){
+            diagonal = 3;
+        } else if ((offsetLine<0)&&(offsetColomn>0)){
+            diagonal = 2;
+        } else {
+            diagonal = 1;
         }
         
         

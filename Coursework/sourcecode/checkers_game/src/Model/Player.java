@@ -32,29 +32,25 @@ public abstract class Player implements Serializable{
         }
     }
     
-    public Check chooseNextMove(ArrayList<Check> possibleMoves){
-        Scanner keyboardUSER = new Scanner(System.in);
-        int choice=0;
-        int count=1;
-        boolean rightChoice=false;
-        System.out.println("Choose the next Check :");
-        for(Check currentCheck : possibleMoves){
-            System.out.println(count+") Line: "+(currentCheck.getLineNumber()+1)+ " | Colomn: "+(currentCheck.getColomnNumber()+1));
-            count++;
-        }
-        while(!rightChoice){
-            System.out.println("Select an option above from 1 to "+(count-1));
-            choice=(keyboardUSER.nextInt());
-            if((choice>=1)&&(choice<count)){
-                rightChoice=true;
+    public abstract ArrayList<Check> chooseNextMove(HashMap<ArrayList,Integer> possibleMoves);
+    
+    public abstract Piece choosePieceToMove();
+    
+    public void playOnce(){
+        System.out.println(this.getName()+"'s turn to play !");
+        Piece pieceToMove = this.choosePieceToMove();
+        if(pieceToMove!=null){
+            ArrayList<Check> arrival = this.chooseNextMove(pieceToMove.getPossibleMoves());
+            if(arrival.size()>1){
+                pieceToMove.riffleMove(arrival);
             } else {
-                System.out.println("Wrong choice try again between 1 and "+(count-1));
-            }
+                pieceToMove.move(arrival.get(0));    
+            }                    
+        } else {
+            System.out.println(this.getName()+" cannot play !");
         }
-        
-        return possibleMoves.get((choice-1));
-        
     }
+
 
 	
 	

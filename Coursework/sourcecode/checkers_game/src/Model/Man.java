@@ -256,33 +256,58 @@ public class Man extends Piece implements Serializable{
         }
 
     @Override
-    public ArrayList<Check> getPossibleMoves() {
+    public HashMap<ArrayList,Integer> getPossibleMoves() {
+        /**
+         *We return a HashMap<ArrayList,Integer>
+         * The ArrayList corresponds to a set of possible checks :
+         *      - For a simple move or a simple capture it will only be one check
+         *      - For a riffle, it includes all the necessary Checks to realize it
+         * Integer corresponds to the move type :
+         *      - 0: Simple move
+         *      - 1: Simple capture move
+         *      - 2: Riffle move
+         * 
+         * If a riffle is possible, The player has no other choice to do it
+         * If multiple riffle are possible, The player must move its piece which can realize the longest riffle
+         * If there are no riffle possible, Then we check if there are capture possible, If it is, the player has no other choice to do it
+         * If there are no riffle or simple capture possible, we check if there are simple moves possible. 
+         */
+        HashMap<ArrayList,Integer> results = new HashMap<ArrayList,Integer>();
+        
         Tree<Check> rootCurrentPosition = new Tree<Check>(this.getPosition());
         Tree<Check> riffle;
         riffle = this.getRifleMove(rootCurrentPosition,this.getPosition().getGameboard());
-        riffle.drawTree();
         ArrayList<ArrayList> longestRiffle = riffle.getLongestTreePath();
-        System.out.println("Longest riffle(s) possible : ");
-        int riffleNumber=1;
-        int checkNumber;
-        for(ArrayList<Check> currentArrayList : longestRiffle){
-            System.out.println("\n-------------------------\n\nRiffle number "+riffleNumber);
-            checkNumber=1;
-            for(Check currentCheck : currentArrayList){
-                System.out.println("Check "+checkNumber+" on line "+(currentCheck.getLineNumber()+1)+" and colomn "+ (currentCheck.getColomnNumber()+1));
-                checkNumber++;
-            }
-            riffleNumber++;
-        }
+        ArrayList<Check> captureMoves = new ArrayList<Check>();
+        ArrayList<Check> simpleMoves = new ArrayList<Check>();
+        ArrayList<Check> newMoveToAdd;
+        Gameboard gameboardCopy;
         
-        Gameboard gameboardCopy = (Gameboard)DeepCopy.copy(this.getPosition().getGameboard());
-     
-        ArrayList<Check> possibleMoves = new ArrayList<Check>();
-        possibleMoves.addAll(this.getFrontMove());
-        possibleMoves.addAll(this.getFrontCaptureMove(gameboardCopy).keySet());
-        possibleMoves.addAll(this.getBackCaptureMove((gameboardCopy)).keySet());
-
-        return possibleMoves;
+        if((!longestRiffle.isEmpty())&&(longestRiffle.get(0)).size()>2){// Must be > 2 to be consider as a riffle, else where it's a simple capture
+            for(ArrayList currentRifle : longestRiffle){
+                    results.put(currentRifle, 2);           
+            }
+        } else {            
+            gameboardCopy = (Gameboard)DeepCopy.copy(this.getPosition().getGameboard());            
+            captureMoves.addAll(this.getFrontCaptureMove(gameboardCopy).keySet());
+            captureMoves.addAll(this.getBackCaptureMove(gameboardCopy).keySet());
+            if(!captureMoves.isEmpty()){
+                for(Check currentCheck : captureMoves){
+                    newMoveToAdd = new ArrayList<Check>();
+                    newMoveToAdd.add(currentCheck);
+                    results.put(newMoveToAdd,1);
+                }
+            }else{
+                simpleMoves.addAll(this.getFrontMove());
+                for(Check currentCheck : captureMoves){
+                    newMoveToAdd = new ArrayList<Check>();
+                    newMoveToAdd.add(currentCheck);
+                    results.put(newMoveToAdd,0);
+                }                
+            }           
+            
+        }      
+        return results;
     }        
 
     @Override

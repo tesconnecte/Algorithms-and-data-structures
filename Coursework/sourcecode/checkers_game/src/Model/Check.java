@@ -18,7 +18,7 @@ public class Check implements Serializable{
             /*
             Test Code            
             */
-            if((lineNumber==1)&&(colomnNumber==2)){
+            /*if((lineNumber==1)&&(colomnNumber==2)){
                 checkPiece = new Man(this,"black",0);
                 this.checkPiece=checkPiece;
             }else if((lineNumber==1)&&(colomnNumber==4)){
@@ -50,10 +50,10 @@ public class Check implements Serializable{
                 this.checkPiece=checkPiece;
             } else {
                 this.checkPiece=checkPiece;
-            }
+            }*/
             /*
             End test code
-            *//*            
+            */          
             if((lineNumber>=0)&&(lineNumber<=3)){
                 if(((lineNumber%2)==0)&&((colomnNumber%2)==1)){
                     checkPiece = new Man(this,"black",0);
@@ -76,7 +76,7 @@ public class Check implements Serializable{
                     }
             } else {
                 this.checkPiece=checkPiece;
-            }*/
+            }
         }
 
         public Piece getcheckPiece() {
