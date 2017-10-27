@@ -29,7 +29,6 @@ public class Game {
         currentPlayer = new LinkedList<Player>();
         gameHistory = new LinkedList<HashMap>();
         this.gameIsOver = false;
-        
         ArrayList<Piece> whitePieces = gameboard.getPiecesByColor("white");
         ArrayList<Piece> blackPieces = gameboard.getPiecesByColor("black");
         
@@ -44,9 +43,9 @@ public class Game {
         }
         
         currentPlayer.add((Player)DeepCopy.copy(playerOne));
-        HashMap<Gameboard,Player> initialisationState = new HashMap<Gameboard,Player>();
+        /*HashMap<Gameboard,Player> initialisationState = new HashMap<Gameboard,Player>();
         initialisationState.put((Gameboard)DeepCopy.copy(gameboard), null);
-        gameHistory.add(initialisationState);
+        gameHistory.add(initialisationState);*/
     }
 
     public Gameboard getGameboard() {
@@ -75,7 +74,12 @@ public class Game {
     
 
     public Player getCurrentPlayer() {
-        return currentPlayer.getFirst();
+        if(this.getPlayerOne().getName().equals(currentPlayer.getLast().getName())){
+            return this.getPlayerOne();
+        } else {
+           return this.getPlayerTwo();
+        }
+        
     }
 
     public HashMap<Gameboard,Player> getCurrentGameboardHistory() {
@@ -83,7 +87,7 @@ public class Game {
     }
     
     public void nextPlayer(){
-        if(this.getCurrentPlayer().getName()==playerOne.getName()){
+        if(this.getCurrentPlayer().getName().equals(playerOne.getName())){
             currentPlayer.add(playerTwo);
         } else {
             currentPlayer.add(playerOne);

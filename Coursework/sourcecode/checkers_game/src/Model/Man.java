@@ -37,9 +37,10 @@ public class Man extends Piece implements Serializable{
             Check loopCheck;
             Tree<Check> loopTree = possibilities;
             while(loopTree.getParent()!=null){
-                loopCheck = (Check)possibilities.getParent().getData();
-                originalGameboard = loopCheck.getGameboard();
                 loopTree = loopTree.getParent();
+                loopCheck = (Check)loopTree.getData();
+                originalGameboard = loopCheck.getGameboard();
+                
             }
             
             Check previousCheckOnOldGameboard = (Check)possibilities.getData();
@@ -151,7 +152,7 @@ public class Man extends Piece implements Serializable{
                     if(positionColomn>1){
                         middleOption = gameboard.getCheckByLineColomn((positionLine+1),(positionColomn-1));
                         captureOption = gameboard.getCheckByLineColomn((positionLine+2),(positionColomn-2));
-                        if((middleOption.isOccupied())&&(middleOption.getcheckPiece().getColor()!=this.getColor())&&(!captureOption.isOccupied())){                     
+                        if((middleOption.isOccupied())&&(!middleOption.getcheckPiece().getColor().equals(this.getColor()))&&(!captureOption.isOccupied())){                     
                             copyGameboard = (Gameboard)DeepCopy.copy(gameboard);
                             copyGameboard.getCheckByLineColomn(middleOption.getLineNumber(), middleOption.getColomnNumber()).getcheckPiece().disapear();
                             possibleMoves.put(captureOption, copyGameboard);
@@ -160,7 +161,7 @@ public class Man extends Piece implements Serializable{
                     if(positionColomn<(nbGameboardColomns-1)){
                         middleOption = gameboard.getCheckByLineColomn((positionLine+1),(positionColomn+1));
                         captureOption = gameboard.getCheckByLineColomn((positionLine+2),(positionColomn+2));
-                        if((middleOption.isOccupied())&&(middleOption.getcheckPiece().getColor()!=this.getColor())&&(!captureOption.isOccupied())){
+                        if((middleOption.isOccupied())&&(!middleOption.getcheckPiece().getColor().equals(this.getColor()))&&(!captureOption.isOccupied())){
                             copyGameboard = (Gameboard)DeepCopy.copy(gameboard);
                             copyGameboard.getCheckByLineColomn(middleOption.getLineNumber(), middleOption.getColomnNumber()).getcheckPiece().disapear();
                             possibleMoves.put(captureOption, copyGameboard);
@@ -173,7 +174,7 @@ public class Man extends Piece implements Serializable{
                     if(positionColomn>1){
                             middleOption = gameboard.getCheckByLineColomn((positionLine-1),(positionColomn-1));
                             captureOption = gameboard.getCheckByLineColomn((positionLine-2),(positionColomn-2));
-                            if((middleOption.isOccupied())&&(middleOption.getcheckPiece().getColor()!=this.getColor())&&(!captureOption.isOccupied())){
+                            if((middleOption.isOccupied())&&(!middleOption.getcheckPiece().getColor().equals(this.getColor()))&&(!captureOption.isOccupied())){
                                 copyGameboard = (Gameboard)DeepCopy.copy(gameboard);
                                 copyGameboard.getCheckByLineColomn(middleOption.getLineNumber(), middleOption.getColomnNumber()).getcheckPiece().disapear();
                                 possibleMoves.put(captureOption, copyGameboard);                                
@@ -182,7 +183,7 @@ public class Man extends Piece implements Serializable{
                     if(positionColomn<(nbGameboardColomns-1)){
                             middleOption = gameboard.getCheckByLineColomn((positionLine-1),(positionColomn+1));
                             captureOption = gameboard.getCheckByLineColomn((positionLine-2),(positionColomn+2));
-                            if((middleOption.isOccupied())&&(middleOption.getcheckPiece().getColor()!=this.getColor())&&(!captureOption.isOccupied())){
+                            if((middleOption.isOccupied())&&(!middleOption.getcheckPiece().getColor().equals(this.getColor()))&&(!captureOption.isOccupied())){
                                 copyGameboard = (Gameboard)DeepCopy.copy(gameboard);
                                 copyGameboard.getCheckByLineColomn(middleOption.getLineNumber(), middleOption.getColomnNumber()).getcheckPiece().disapear();
                                 possibleMoves.put(captureOption, copyGameboard);
@@ -212,7 +213,7 @@ public class Man extends Piece implements Serializable{
                     if(positionColomn>1){
                         middleOption = gameboard.getCheckByLineColomn((positionLine-1),(positionColomn-1));
                         backwardCaptureOption = gameboard.getCheckByLineColomn((positionLine-2),(positionColomn-2));
-                        if((middleOption.isOccupied())&&(middleOption.getcheckPiece().getColor()!=this.getColor())&&(!backwardCaptureOption.isOccupied())){
+                        if((middleOption.isOccupied())&&(!middleOption.getcheckPiece().getColor().equals(this.getColor()))&&(!backwardCaptureOption.isOccupied())){
                             copyGameboard = (Gameboard)DeepCopy.copy(gameboard);
                             copyGameboard.getCheckByLineColomn(middleOption.getLineNumber(), middleOption.getColomnNumber()).getcheckPiece().disapear();
                             possibleMoves.put(backwardCaptureOption, copyGameboard);
@@ -221,7 +222,7 @@ public class Man extends Piece implements Serializable{
                     if(positionColomn<(nbGameboardColomns-1)){
                         middleOption = gameboard.getCheckByLineColomn((positionLine-1),(positionColomn+1));
                         backwardCaptureOption = gameboard.getCheckByLineColomn((positionLine-2),(positionColomn+2));
-                        if((middleOption.isOccupied())&&(middleOption.getcheckPiece().getColor()!=this.getColor())&&(!backwardCaptureOption.isOccupied())){
+                        if((middleOption.isOccupied())&&(!middleOption.getcheckPiece().getColor().equals(this.getColor()))&&(!backwardCaptureOption.isOccupied())){
                             copyGameboard = (Gameboard)DeepCopy.copy(gameboard);
                             copyGameboard.getCheckByLineColomn(middleOption.getLineNumber(), middleOption.getColomnNumber()).getcheckPiece().disapear();
                             possibleMoves.put(backwardCaptureOption, copyGameboard);
@@ -234,7 +235,7 @@ public class Man extends Piece implements Serializable{
                     if(positionColomn>1){
                             middleOption = gameboard.getCheckByLineColomn((positionLine+1),(positionColomn-1));
                             backwardCaptureOption = gameboard.getCheckByLineColomn((positionLine+2),(positionColomn-2));                            
-                            if((middleOption.isOccupied())&&(middleOption.getcheckPiece().getColor()!=this.getColor())&&(!backwardCaptureOption.isOccupied())){
+                            if((middleOption.isOccupied())&&(!middleOption.getcheckPiece().getColor().equals(this.getColor()))&&(!backwardCaptureOption.isOccupied())){
                                 copyGameboard = (Gameboard)DeepCopy.copy(gameboard);
                                 copyGameboard.getCheckByLineColomn(middleOption.getLineNumber(), middleOption.getColomnNumber()).getcheckPiece().disapear();
                                 possibleMoves.put(backwardCaptureOption, copyGameboard);
@@ -243,7 +244,7 @@ public class Man extends Piece implements Serializable{
                     if(positionColomn<(nbGameboardColomns-1)){
                             middleOption = gameboard.getCheckByLineColomn((positionLine+1),(positionColomn+1));
                             backwardCaptureOption = gameboard.getCheckByLineColomn((positionLine+2),(positionColomn+2));
-                            if((middleOption.isOccupied())&&(middleOption.getcheckPiece().getColor()!=this.getColor())&&(!backwardCaptureOption.isOccupied())){
+                            if((middleOption.isOccupied())&&(!middleOption.getcheckPiece().getColor().equals(this.getColor()))&&(!backwardCaptureOption.isOccupied())){
                                 copyGameboard = (Gameboard)DeepCopy.copy(gameboard);
                                 copyGameboard.getCheckByLineColomn(middleOption.getLineNumber(), middleOption.getColomnNumber()).getcheckPiece().disapear();
                                 possibleMoves.put(backwardCaptureOption, copyGameboard);
@@ -294,12 +295,12 @@ public class Man extends Piece implements Serializable{
             if(!captureMoves.isEmpty()){
                 for(Check currentCheck : captureMoves){
                     newMoveToAdd = new ArrayList<Check>();
-                    newMoveToAdd.add(currentCheck);
+                    newMoveToAdd.add(this.getPosition().getGameboard().getCheckByLineColomn(currentCheck.getLineNumber(), currentCheck.getColomnNumber()));
                     results.put(newMoveToAdd,1);
                 }
             }else{
                 simpleMoves.addAll(this.getFrontMove());
-                for(Check currentCheck : captureMoves){
+                for(Check currentCheck : simpleMoves){
                     newMoveToAdd = new ArrayList<Check>();
                     newMoveToAdd.add(currentCheck);
                     results.put(newMoveToAdd,0);

@@ -28,9 +28,9 @@ public class Checkers_game {
         
         Player currentPlayer;
         
-        while(!game.isGameIsOver()){
+        while(!game.isGameIsOver()){            
             mainGameboard.drawGameboard();
-            currentPlayer = game.getCurrentPlayer();
+            currentPlayer = game.getCurrentPlayer();                        
             currentPlayer.playOnce();
             game.addGameboardHistory();
             game.nextPlayer();

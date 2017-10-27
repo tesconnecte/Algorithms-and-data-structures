@@ -78,7 +78,7 @@ public class King extends Piece implements Serializable{
                 adversaryPiece = currentOption.getcheckPiece();
                 positionLine--;
                 positionColomn--;
-                if(adversaryPiece.getColor()!=this.getColor()){
+                if(!adversaryPiece.getColor().equals(this.getColor())){
                     copyGameboard = (Gameboard)DeepCopy.copy(gameboard);
                     copyGameboard.getCheckByLineColomn(currentOption.getLineNumber(), currentOption.getColomnNumber()).getcheckPiece().disapear();
                     isFree  = true;
@@ -110,7 +110,7 @@ public class King extends Piece implements Serializable{
                 adversaryPiece = currentOption.getcheckPiece();                
                 positionLine--;
                 positionColomn++;
-                if(adversaryPiece.getColor()!=this.getColor()){
+                if(!adversaryPiece.getColor().equals(this.getColor())){
                     copyGameboard = (Gameboard)DeepCopy.copy(gameboard);
                     copyGameboard.getCheckByLineColomn(currentOption.getLineNumber(), currentOption.getColomnNumber()).getcheckPiece().disapear();
                     isFree  = true;                    
@@ -141,7 +141,7 @@ public class King extends Piece implements Serializable{
                 adversaryPiece = currentOption.getcheckPiece();              
                 positionLine++;
                 positionColomn--;
-                if(adversaryPiece.getColor()!=this.getColor()){
+                if(!adversaryPiece.getColor().equals(this.getColor())){
                     copyGameboard = (Gameboard)DeepCopy.copy(gameboard);
                     copyGameboard.getCheckByLineColomn(currentOption.getLineNumber(), currentOption.getColomnNumber()).getcheckPiece().disapear();
                     isFree  = true;                    
@@ -173,7 +173,7 @@ public class King extends Piece implements Serializable{
                 adversaryPiece = currentOption.getcheckPiece();          
                 positionLine++;
                 positionColomn++;
-                if(adversaryPiece.getColor()!=this.getColor()){
+                if(!adversaryPiece.getColor().equals(this.getColor())){
                     copyGameboard = (Gameboard)DeepCopy.copy(gameboard);
                     copyGameboard.getCheckByLineColomn(currentOption.getLineNumber(), currentOption.getColomnNumber()).getcheckPiece().disapear();
                     isFree  = true;                   
@@ -313,7 +313,7 @@ public class King extends Piece implements Serializable{
                 }
             }else{
                 simpleMoves.addAll(this.getKingMove());
-                for(Check currentCheck : captureMoves){
+                for(Check currentCheck : simpleMoves){
                     newMoveToAdd = new ArrayList<Check>();
                     newMoveToAdd.add(currentCheck);
                     results.put(newMoveToAdd,0);
