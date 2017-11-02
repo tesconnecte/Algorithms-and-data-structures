@@ -39,7 +39,6 @@ public class Human extends Player implements Serializable{
         System.out.println("next Check: Line "+(move.get(0).getLineNumber()+1)+", Colomn "+(move.get(0).getColomnNumber()+1));        
     }
     
-    @Override
     public ArrayList<Check> chooseNextMove(HashMap<ArrayList,Integer> possibleMoves){
         Scanner keyboardUSER = new Scanner(System.in);
         int choice=0;
@@ -81,7 +80,6 @@ public class Human extends Player implements Serializable{
         return result;
     }
 
-    @Override
     public Piece choosePieceToMove() {
         Scanner keyboardUSER = new Scanner(System.in);
         int choice=0;
@@ -164,6 +162,22 @@ public class Human extends Player implements Serializable{
             return(movablePiece.get((choice-1)));
         }else{
             return null;
+        }
+    }
+    
+    @Override
+    public void playOnce(){
+        System.out.println(this.getName()+"'s turn to play !");
+        Piece pieceToMove = this.choosePieceToMove();
+        if(pieceToMove!=null){
+            ArrayList<Check> arrival = this.chooseNextMove(pieceToMove.getPossibleMoves());
+            if(arrival.size()>1){
+                pieceToMove.riffleMove(arrival);
+            } else {
+                pieceToMove.move(arrival.get(0));    
+            }                    
+        } else {
+            System.out.println(this.getName()+" cannot play !");
         }
     }
     

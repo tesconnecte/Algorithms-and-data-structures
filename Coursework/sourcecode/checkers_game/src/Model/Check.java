@@ -17,8 +17,8 @@ public class Check implements Serializable{
             Piece checkPiece = null;
             /*
             Test Code            
-            */
-            /*if((lineNumber==1)&&(colomnNumber==2)){
+            *//*
+            if((lineNumber==1)&&(colomnNumber==2)){
                 checkPiece = new Man(this,"black",0);
                 this.checkPiece=checkPiece;
             }else if((lineNumber==1)&&(colomnNumber==4)){
@@ -108,6 +108,75 @@ public class Check implements Serializable{
 	public void setColomnNumber(int colomnNumber) {
 		this.colomnNumber = colomnNumber;
 	}
+        
+        public boolean nearCheckOccupied(String color){
+            boolean isPossiblyGoingToDieHere = false;
+            int lineNumber = this.getLineNumber();
+            int colomnNumber = this.getColomnNumber();
+            Gameboard gameboard = this.getGameboard();
+            Check currentCheck;
+            Piece currentPiece;
+            boolean closestCheck = true;
+            
+            while(((lineNumber-1)>=0)&&((colomnNumber-1)>=0)){
+                currentCheck = gameboard.getCheckByLineColomn((lineNumber-1), (colomnNumber-1));
+                currentPiece = currentCheck.getcheckPiece();
+                if((currentPiece!=null)&&(closestCheck)&&(!currentPiece.getColor().equals(color))){
+                   isPossiblyGoingToDieHere = true;
+                   closestCheck=false;
+                }else if ((currentPiece!=null)&&(currentPiece instanceof King)&&(!currentPiece.getColor().equals(color))){
+                   isPossiblyGoingToDieHere = true;
+                }
+                lineNumber--;
+                colomnNumber--;
+            }
+            lineNumber = this.getLineNumber();
+            colomnNumber = this.getColomnNumber();
+            closestCheck = true;
+            while(((lineNumber-1)>=0)&&((colomnNumber+1)<gameboard.getNbColomns())){
+                currentCheck = gameboard.getCheckByLineColomn((lineNumber-1), (colomnNumber+1));
+                currentPiece = currentCheck.getcheckPiece();
+                if((currentPiece!=null)&&(closestCheck)&&(!currentPiece.getColor().equals(color))){
+                   isPossiblyGoingToDieHere = true;
+                   closestCheck=false;
+                }else if ((currentPiece!=null)&&(currentPiece instanceof King)&&(!currentPiece.getColor().equals(color))){
+                   isPossiblyGoingToDieHere = true;
+                }
+                lineNumber--;
+                colomnNumber++;
+            }
+            lineNumber = this.getLineNumber();
+            colomnNumber = this.getColomnNumber();
+            closestCheck = true;
+            while(((lineNumber+1)<gameboard.getNbLines())&&((colomnNumber-1)>=0)){
+                currentCheck = gameboard.getCheckByLineColomn((lineNumber+1), (colomnNumber-1));
+                currentPiece = currentCheck.getcheckPiece();
+                if((currentPiece!=null)&&(closestCheck)&&(!currentPiece.getColor().equals(color))){
+                   isPossiblyGoingToDieHere = true;
+                   closestCheck=false;
+                }else if ((currentPiece!=null)&&(currentPiece instanceof King)&&(!currentPiece.getColor().equals(color))){
+                   isPossiblyGoingToDieHere = true;
+                }
+                lineNumber++;
+                colomnNumber--;
+            }
+            lineNumber = this.getLineNumber();
+            colomnNumber = this.getColomnNumber();
+            closestCheck = true;
+            while(((lineNumber+1)<gameboard.getNbLines())&&((colomnNumber+1)<gameboard.getNbColomns())){
+                currentCheck = gameboard.getCheckByLineColomn((lineNumber+1), (colomnNumber+1));
+                currentPiece = currentCheck.getcheckPiece();
+                if((currentPiece!=null)&&(closestCheck)&&(!currentPiece.getColor().equals(color))){
+                   isPossiblyGoingToDieHere = true;
+                   closestCheck=false;
+                }else if ((currentPiece!=null)&&(currentPiece instanceof King)&&(!currentPiece.getColor().equals(color))){
+                   isPossiblyGoingToDieHere = true;
+                }
+                lineNumber++;
+                colomnNumber++;
+            }            
+            return isPossiblyGoingToDieHere;
+        }
 
 	public boolean isOccupied() {
 		if(this.getcheckPiece()==null){

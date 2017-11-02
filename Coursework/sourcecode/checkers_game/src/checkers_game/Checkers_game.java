@@ -23,7 +23,7 @@ public class Checkers_game {
         System.out.println(" Checkers Game / Le jeu de dames\n_________________________________\n");
         Gameboard mainGameboard = new Gameboard();
         Human playerOne = new Human("Alexis");
-        Human playerTwo = new Human("Simon");
+        AI playerTwo = new AI();
         Game game = new Game(mainGameboard,playerOne,playerTwo);
         
         Player currentPlayer;

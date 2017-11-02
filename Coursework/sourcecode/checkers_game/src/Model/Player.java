@@ -32,24 +32,7 @@ public abstract class Player implements Serializable{
         }
     }
     
-    public abstract ArrayList<Check> chooseNextMove(HashMap<ArrayList,Integer> possibleMoves);
-    
-    public abstract Piece choosePieceToMove();
-    
-    public void playOnce(){
-        System.out.println(this.getName()+"'s turn to play !");
-        Piece pieceToMove = this.choosePieceToMove();
-        if(pieceToMove!=null){
-            ArrayList<Check> arrival = this.chooseNextMove(pieceToMove.getPossibleMoves());
-            if(arrival.size()>1){
-                pieceToMove.riffleMove(arrival);
-            } else {
-                pieceToMove.move(arrival.get(0));    
-            }                    
-        } else {
-            System.out.println(this.getName()+" cannot play !");
-        }
-    }
+    public abstract void playOnce();
 
 
 	
