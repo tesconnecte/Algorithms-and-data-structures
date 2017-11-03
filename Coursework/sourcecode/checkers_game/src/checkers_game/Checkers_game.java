@@ -5,9 +5,12 @@
  */
 package checkers_game;
 import Model.*;
+import UI.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 /**
  *
@@ -25,6 +28,10 @@ public class Checkers_game {
         Human playerOne = new Human("Alexis");
         AI playerTwo = new AI();
         Game game = new Game(mainGameboard,playerOne,playerTwo);
+        JFrame mainWindow = new JFrame();
+        mainWindow.add(new MainWindowAllContent(game));
+        mainWindow.pack();
+        mainWindow.setVisible(true);
         
         Player currentPlayer;
         
