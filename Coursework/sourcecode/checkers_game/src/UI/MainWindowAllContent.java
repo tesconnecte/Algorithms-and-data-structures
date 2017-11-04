@@ -24,9 +24,15 @@ public class MainWindowAllContent extends JPanel {
         setBorder(BorderFactory.createLineBorder(Color.black));
         this.setLayout(new BorderLayout());
         this.add(new MainWindowNorthContent(),BorderLayout.NORTH);
-        //this.add(null,BorderLayout.WEST);
         this.add(new MainWindowContent(game), BorderLayout.CENTER);
         this.add(new MainWindowOtherContent(), BorderLayout.EAST);
     }
+    
+    public void refreshDisplay(Game game){
+        game.getGameboard().drawGameboard();
+        this.getParent().getComponent(0).repaint();       
+    }
+    
+    
     
 }

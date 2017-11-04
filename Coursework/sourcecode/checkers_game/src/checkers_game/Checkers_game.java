@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -29,15 +30,22 @@ public class Checkers_game {
         AI playerTwo = new AI();
         Game game = new Game(mainGameboard,playerOne,playerTwo);
         JFrame mainWindow = new JFrame();
-        mainWindow.add(new MainWindowAllContent(game));
+        mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        MainWindowAllContent windowContent = new MainWindowAllContent(game);
+        mainWindow.add(windowContent);
         mainWindow.pack();
         mainWindow.setVisible(true);
         
         Player currentPlayer;
         
         while(!game.isGameIsOver()){            
-            mainGameboard.drawGameboard();
-            currentPlayer = game.getCurrentPlayer();                        
+            //mainGameboard.drawGameboard();
+            windowContent.refreshDisplay(game);
+            currentPlayer = game.getCurrentPlayer();
+            JOptionPane.showMessageDialog(windowContent, "It is at "+ currentPlayer.getName()+" to play");
+            if(currentPlayer instanceof Human){
+                ((Human) currentPlayer).choosePieceToMove((MainWindowContent)windowContent.getComponent(1));
+            }
             currentPlayer.playOnce();
             game.addGameboardHistory();
             game.nextPlayer();
