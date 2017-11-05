@@ -7,6 +7,7 @@ package checkers_game;
 import Model.*;
 import UI.*;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -55,7 +56,7 @@ public class Checkers_game {
             JOptionPane.showMessageDialog(windowAllContent, "It is at "+ currentPlayer.getName()+" to play");
             if(currentPlayer instanceof Human){
                 ArrayList<Piece> movablePiece = ((Human) currentPlayer).choosePieceToMove();
-                mainWindowContent.showSelectableCheck(movablePiece);
+                mainWindowContent.showSelectablePiece(movablePiece);
                 int[] coordonates;
                 while(pieceToMove==null){
                     coordonates=mainWindowContent.chooseCheck();
@@ -67,14 +68,16 @@ public class Checkers_game {
                         }
                     }
                 }
+                //windowAllContent.refreshDisplay(game);
+                mainWindowContent.greenOriginalColorFlash(pieceToMove.getPosition().getLineNumber(), pieceToMove.getPosition().getColomnNumber(), (pieceToMove instanceof King), pieceToMove.getColor());
                 currentPossibleMoves=pieceToMove.getPossibleMoves();
-                for(ArrayList<Check> currentoption : pieceToMove.getPossibleMoves().keySet()){
+                for(ArrayList<Check> currentoption : currentPossibleMoves.keySet()){
                     mainWindowContent.showSelectablePath(currentoption);                   
                 }
                 while(currentMoves==null){
                     coordonates=mainWindowContent.chooseCheck();
                     currentCheck=mainGameboard.getCheckByLineColomn(coordonates[0], coordonates[1]);
-                    for(ArrayList<Check> currentoption : pieceToMove.getPossibleMoves().keySet()){
+                    for(ArrayList<Check> currentoption : currentPossibleMoves.keySet()){
                         if(currentoption.contains(currentCheck)){
                             currentMoves=currentoption;
                         }                   

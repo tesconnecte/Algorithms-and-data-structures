@@ -363,8 +363,7 @@ public class Man extends Piece implements Serializable{
         upgradedMan.setOwner(this.getOwner());
         this.getOwner().addPiece(upgradedMan);
         this.die();
-        arrivalCheck.setcheckPiece(upgradedMan);
-        
+        arrivalCheck.setcheckPiece(upgradedMan);        
     }
 
 

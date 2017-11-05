@@ -17,14 +17,17 @@ public class Check implements Serializable{
             Piece checkPiece = null;
             /*
             Test Code            
-            */
+            *//*
             if((lineNumber==1)&&(colomnNumber==2)){
                 checkPiece = new Man(this,"black",0);
                 this.checkPiece=checkPiece;
             }else if((lineNumber==1)&&(colomnNumber==4)){
                 checkPiece = new Man(this,"black",0);
                 this.checkPiece=checkPiece;
-            } else if((lineNumber==2)&&(colomnNumber==5)){
+            } else if((lineNumber==9)&&(colomnNumber==2)){
+                checkPiece = new Man(this,"black",0);
+                this.checkPiece=checkPiece;
+            }else if((lineNumber==2)&&(colomnNumber==5)){
                 checkPiece = new King(this,"black");
                 this.checkPiece=checkPiece;
             }else if((lineNumber==2)&&(colomnNumber==7)){
@@ -51,9 +54,9 @@ public class Check implements Serializable{
             } else {
                 this.checkPiece=checkPiece;
             }
-            /*
+            *//*
             End test code
-            *//*         
+            */         
             if((lineNumber>=0)&&(lineNumber<=3)){
                 if(((lineNumber%2)==0)&&((colomnNumber%2)==1)){
                     checkPiece = new Man(this,"black",0);
@@ -76,7 +79,7 @@ public class Check implements Serializable{
                     }
             } else {
                 this.checkPiece=checkPiece;
-            }*/
+            }
         }
 
         public Piece getcheckPiece() {

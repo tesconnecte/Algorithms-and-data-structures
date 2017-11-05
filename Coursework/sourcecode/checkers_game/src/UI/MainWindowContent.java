@@ -106,19 +106,51 @@ public class MainWindowContent extends JPanel implements MouseListener{
 
             if (whitePieces.get(i) instanceof King) {
                 g.setColor(Color.RED);
-                g.fillOval((whitePieces.get(i).getPosition().getColomnNumber()+1) * subLenght + offset * 4, whitePieces.get(i).getPosition().getLineNumber() * subLenght + offset * 4, subLenght - offset * 6, subLenght - offset * 6);
+                g.fillOval(whitePieces.get(i).getPosition().getColomnNumber() * subLenght + (offset*2) + 13, whitePieces.get(i).getPosition().getLineNumber() * subLenght + (offset*2) +13 , 35, 35);
+                g.setColor(Color.WHITE);
+                g.fillOval(whitePieces.get(i).getPosition().getColomnNumber() * subLenght + (offset*2) + 18, whitePieces.get(i).getPosition().getLineNumber() * subLenght + (offset*2) +18 , 25, 25);
             }
         }
     }
     
-    public void yellowOriginalColorFlash(Rectangle2D rectangle, int lineNumber, int colomnNumber){
+    public void yellowOriginalColorFlash(Rectangle2D rectangle, int lineNumber, int colomnNumber, boolean isKing, Color color){
         Graphics g = this.getGraphics();
         Graphics2D g2d = (Graphics2D) g;        
         g.setColor(Color.YELLOW);
         rectangle.setRect(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight());
         g2d.fill(rectangle);
-        g.setColor(Color.BLACK);
+        g.setColor(color);
         g.fillOval(colomnNumber * subLenght + (offset*2) , lineNumber * subLenght + (offset*2) , 60, 60);
+        if(isKing==true){
+            g.setColor(Color.RED);
+            g.fillOval(colomnNumber * subLenght + (offset*2) + 13, lineNumber * subLenght + (offset*2) +13 , 35, 35);
+            g.setColor(color);
+            g.fillOval(colomnNumber * subLenght + (offset*2) + 18, lineNumber * subLenght + (offset*2) +18 , 25, 25);
+        }
+        
+    }
+    
+        public void greenOriginalColorFlash( int lineNumber, int colomnNumber, boolean isKing, String color){
+        Color paintColor;
+        if(color.equals("black")){
+            paintColor=Color.BLACK;
+        }else{
+            paintColor=Color.WHITE;
+        }
+        Rectangle2D currentRec=graphicalChecks[lineNumber][colomnNumber];
+        Graphics g = this.getGraphics();
+        Graphics2D g2d = (Graphics2D) g;        
+        g.setColor(Color.GREEN);
+        currentRec.setRect(currentRec.getX(), currentRec.getY(), currentRec.getWidth(), currentRec.getHeight());
+        g2d.fill(currentRec);
+        g.setColor(paintColor);
+        g.fillOval(colomnNumber * subLenght + (offset*2) , lineNumber * subLenght + (offset*2) , 60, 60);
+        if(isKing==true){
+            g.setColor(Color.RED);
+            g.fillOval(colomnNumber * subLenght + (offset*2) + 13, lineNumber * subLenght + (offset*2) +13 , 35, 35);
+            g.setColor(paintColor);
+            g.fillOval(colomnNumber * subLenght + (offset*2) + 18, lineNumber * subLenght + (offset*2) +18 , 25, 25);
+        }
         
     }
     
@@ -132,17 +164,30 @@ public class MainWindowContent extends JPanel implements MouseListener{
         
     }
     
-    public void showSelectableCheck(ArrayList<Piece> possibilities){
+    public void showSelectablePiece(ArrayList<Piece> possibilities){
         Check currentCheck;
         int currentLine;
         int currentColomn;
+        boolean isKing;
+        Color color;
         Rectangle2D currentRec ;
         for(int i=0;i<possibilities.size();i++){
             currentCheck=possibilities.get(i).getPosition();
             currentLine=currentCheck.getLineNumber();
             currentColomn=currentCheck.getColomnNumber();
             currentRec=graphicalChecks[currentLine][currentColomn];
-            this.yellowOriginalColorFlash(currentRec,currentLine,currentColomn);           
+            if(possibilities.get(i)instanceof King){
+                isKing=true;
+            }else{
+                isKing=false;
+            }
+            
+            if(possibilities.get(i).getColor().equals("black")){
+                color=Color.BLACK;
+            }else{
+                 color=Color.WHITE;
+            }
+            this.yellowOriginalColorFlash(currentRec,currentLine,currentColomn,isKing,color);           
         }        
     }
     
