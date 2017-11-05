@@ -81,7 +81,7 @@ public class Human extends Player implements Serializable{
         return result;
     }
 
-    public Piece choosePieceToMove() {
+    /*public Piece choosePieceToMove() {
         Scanner keyboardUSER = new Scanner(System.in);
         int choice=0;
         int count=1;
@@ -165,9 +165,9 @@ public class Human extends Player implements Serializable{
         }else{
             return null;
         }
-    }
+    }*/
     
-    public Piece choosePieceToMove(MainWindowContent test) {
+    public ArrayList<Piece> choosePieceToMove() {
         Scanner keyboardUSER = new Scanner(System.in);
         int choice=0;
         int count=1;
@@ -228,6 +228,14 @@ public class Human extends Player implements Serializable{
         } else {
             movablePiece.addAll(movablepieceAndPossibleMoves.keySet());
         }
+        
+        if(!movablePiece.isEmpty()){
+            return movablePiece;
+        } else {
+            return null;
+        }
+        
+        /*
         
         ArrayList<Check> checkspossibles = new ArrayList<Check>();
         for(Piece currentPieceGNAGNA : movablePiece){
@@ -257,12 +265,12 @@ public class Human extends Player implements Serializable{
             return(movablePiece.get((choice-1)));
         }else{
             return null;
-        }
+        }*/
     }
     
     @Override
     public void playOnce(){
-        System.out.println(this.getName()+"'s turn to play !");
+        /*System.out.println(this.getName()+"'s turn to play !");
         Piece pieceToMove = this.choosePieceToMove();
         if(pieceToMove!=null){
             ArrayList<Check> arrival = this.chooseNextMove(pieceToMove.getPossibleMoves());
@@ -273,7 +281,7 @@ public class Human extends Player implements Serializable{
             }                    
         } else {
             System.out.println(this.getName()+" cannot play !");
-        }
+        }*/
     }
     
 }

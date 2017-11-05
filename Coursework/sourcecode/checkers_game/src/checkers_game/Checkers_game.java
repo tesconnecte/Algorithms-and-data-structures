@@ -6,6 +6,7 @@
 package checkers_game;
 import Model.*;
 import UI.*;
+import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -22,7 +23,7 @@ public class Checkers_game {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         // TODO code application logic here
         System.out.println(" Checkers Game / Le jeu de dames\n_________________________________\n");
         Gameboard mainGameboard = new Gameboard();
@@ -31,22 +32,68 @@ public class Checkers_game {
         Game game = new Game(mainGameboard,playerOne,playerTwo);
         JFrame mainWindow = new JFrame();
         mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        MainWindowAllContent windowContent = new MainWindowAllContent(game);
-        mainWindow.add(windowContent);
+        MainWindowAllContent windowAllContent = new MainWindowAllContent();
+        windowAllContent.setLayout(new BorderLayout());
+        windowAllContent.add(new MainWindowNorthContent(),BorderLayout.NORTH);
+        MainWindowContent mainWindowContent = new MainWindowContent(game);
+        windowAllContent.add(mainWindowContent, BorderLayout.CENTER);
+        windowAllContent.add(new MainWindowOtherContent(), BorderLayout.EAST);
+        mainWindow.add(windowAllContent);
         mainWindow.pack();
         mainWindow.setVisible(true);
         
         Player currentPlayer;
+        Piece pieceToMove = null;
+        Check currentCheck = null;
+        HashMap<ArrayList,Integer> currentPossibleMoves = null;
+        ArrayList<Check> currentMoves = null;
         
         while(!game.isGameIsOver()){            
             //mainGameboard.drawGameboard();
-            windowContent.refreshDisplay(game);
+            windowAllContent.refreshDisplay(game);
             currentPlayer = game.getCurrentPlayer();
-            JOptionPane.showMessageDialog(windowContent, "It is at "+ currentPlayer.getName()+" to play");
+            JOptionPane.showMessageDialog(windowAllContent, "It is at "+ currentPlayer.getName()+" to play");
             if(currentPlayer instanceof Human){
-                ((Human) currentPlayer).choosePieceToMove((MainWindowContent)windowContent.getComponent(1));
+                ArrayList<Piece> movablePiece = ((Human) currentPlayer).choosePieceToMove();
+                mainWindowContent.showSelectableCheck(movablePiece);
+                int[] coordonates;
+                while(pieceToMove==null){
+                    coordonates=mainWindowContent.chooseCheck();
+                    currentCheck=mainGameboard.getCheckByLineColomn(coordonates[0], coordonates[1]);
+                    if(currentCheck.getcheckPiece()!=null){
+                        pieceToMove=currentCheck.getcheckPiece();
+                        if(!movablePiece.contains(pieceToMove)){
+                            pieceToMove=null;
+                        }
+                    }
+                }
+                currentPossibleMoves=pieceToMove.getPossibleMoves();
+                for(ArrayList<Check> currentoption : pieceToMove.getPossibleMoves().keySet()){
+                    mainWindowContent.showSelectablePath(currentoption);                   
+                }
+                while(currentMoves==null){
+                    coordonates=mainWindowContent.chooseCheck();
+                    currentCheck=mainGameboard.getCheckByLineColomn(coordonates[0], coordonates[1]);
+                    for(ArrayList<Check> currentoption : pieceToMove.getPossibleMoves().keySet()){
+                        if(currentoption.contains(currentCheck)){
+                            currentMoves=currentoption;
+                        }                   
+                    }                    
+                }
+                
+                if(currentMoves.size()>1){
+                   pieceToMove.riffleMove(currentMoves);
+                } else {
+                    pieceToMove.move(currentMoves.get(0));                    
+                }
+                pieceToMove = null;
+                currentCheck = null;
+                currentPossibleMoves = null;
+                currentMoves = null;
+            } else {
+                currentPlayer.playOnce();
             }
-            currentPlayer.playOnce();
+            
             game.addGameboardHistory();
             game.nextPlayer();
             
@@ -54,38 +101,17 @@ public class Checkers_game {
             
             if((playerOne.getPieces().isEmpty())||(playerTwo.getPieces().isEmpty())){
                 game.setGameIsOver(true);
-                System.out.println("END OF THE GAME");                
+                String winner;
+                if(playerOne.getPieces().isEmpty()){
+                    winner=playerOne.getName();
+                }else{
+                    winner=playerOne.getName();
+                }
+                JOptionPane.showMessageDialog(null,winner+" has won !");               
             }
                    
             
-        }
-        
-       /* Piece test1 = mainGameboard.getCheckByLineColomn(6, 1).getcheckPiece();
-        Piece test2 = mainGameboard.getCheckByLineColomn(7, 2).getcheckPiece();
-        
-        if(test1 instanceof Man){
-            ArrayList<Check> test1moves=test1.getPossibleMoves();
-            
-            
-            test1.move(test1moves.get(0));
-            mainGameboard.drawGameboard();
-            
-            test1moves=test2.getPossibleMoves();
-            for(Check currentMove : test1moves){
-                System.out.println(" L : "+(currentMove.getLineNumber()+1)+" | C : "+(currentMove.getColomnNumber()+1));
-            }
-            
-            /*
-            test1moves=test1.getPossibleMoves();
-            for(Check currentMove : test1moves){
-                System.out.println(" L : "+(currentMove.getLineNumber()+1)+" | C : "+(currentMove.getColomnNumber()+1));
-            }
-            
-            test1.move(test1moves.get(0));
-            mainGameboard.drawGameboard();
-            
-        }*/
-        
+        }       
         
     }
     

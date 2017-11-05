@@ -20,12 +20,8 @@ import javax.swing.JPanel;
  */
 public class MainWindowAllContent extends JPanel {
     
-    public MainWindowAllContent(Game game) {
-        setBorder(BorderFactory.createLineBorder(Color.black));
-        this.setLayout(new BorderLayout());
-        this.add(new MainWindowNorthContent(),BorderLayout.NORTH);
-        this.add(new MainWindowContent(game), BorderLayout.CENTER);
-        this.add(new MainWindowOtherContent(), BorderLayout.EAST);
+    public MainWindowAllContent() {
+        setBorder(BorderFactory.createLineBorder(Color.black));        
     }
     
     public void refreshDisplay(Game game){

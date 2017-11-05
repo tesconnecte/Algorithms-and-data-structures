@@ -16,6 +16,7 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseListener;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -30,6 +31,8 @@ public class MainWindowContent extends JPanel implements MouseListener{
     private ArrayList<Piece> blackPieces;
     private ArrayList<Piece> whitePieces;
     private Rectangle2D[][] graphicalChecks;
+    private int playerInputCheckLine;
+    private int playerInputCheckColomn;
     int size = 900;
     int offset = 15;
     int subLenght = size / 10;
@@ -39,6 +42,8 @@ public class MainWindowContent extends JPanel implements MouseListener{
         graphicalChecks = new Rectangle2D[10][10];
         blackPieces = game.getPlayerOne().getPieces();
         whitePieces = game.getPlayerTwo().getPieces();
+        playerInputCheckLine=-1;
+        playerInputCheckColomn=-1;
         addMouseListener(this);
     }
 
@@ -88,8 +93,10 @@ public class MainWindowContent extends JPanel implements MouseListener{
             g.fillOval(blackPieces.get(i).getPosition().getColomnNumber() * subLenght + (offset*2) , blackPieces.get(i).getPosition().getLineNumber() * subLenght + (offset*2) , 60, 60);
             
             if (blackPieces.get(i) instanceof King) {
-                g.setColor(Color.ORANGE);
-                g.fillOval(blackPieces.get(i).getPosition().getColomnNumber() * subLenght + offset , blackPieces.get(i).getPosition().getLineNumber() * subLenght + offset * 4, subLenght - offset * 6, subLenght - offset * 6);
+                g.setColor(Color.RED);
+                g.fillOval(blackPieces.get(i).getPosition().getColomnNumber() * subLenght + (offset*2) + 13, blackPieces.get(i).getPosition().getLineNumber() * subLenght + (offset*2) +13 , 35, 35);
+                g.setColor(Color.BLACK);
+                g.fillOval(blackPieces.get(i).getPosition().getColomnNumber() * subLenght + (offset*2) + 18, blackPieces.get(i).getPosition().getLineNumber() * subLenght + (offset*2) +18 , 25, 25);
             }
         }
         
@@ -98,7 +105,7 @@ public class MainWindowContent extends JPanel implements MouseListener{
             g.fillOval(whitePieces.get(i).getPosition().getColomnNumber() * subLenght + (offset*2) , whitePieces.get(i).getPosition().getLineNumber() * subLenght + (offset*2) , 60, 60);
 
             if (whitePieces.get(i) instanceof King) {
-                g.setColor(Color.ORANGE);
+                g.setColor(Color.RED);
                 g.fillOval((whitePieces.get(i).getPosition().getColomnNumber()+1) * subLenght + offset * 4, whitePieces.get(i).getPosition().getLineNumber() * subLenght + offset * 4, subLenght - offset * 6, subLenght - offset * 6);
             }
         }
@@ -115,7 +122,31 @@ public class MainWindowContent extends JPanel implements MouseListener{
         
     }
     
-    public void showSelectableCheck(ArrayList<Check> possibilities){
+    public void blueOriginalColorFlash(Rectangle2D rectangle, int lineNumber, int colomnNumber){
+        Graphics g = this.getGraphics();
+        Graphics2D g2d = (Graphics2D) g;        
+        g.setColor(Color.CYAN);
+        rectangle.setRect(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight());
+        g2d.fill(rectangle);
+        
+        
+    }
+    
+    public void showSelectableCheck(ArrayList<Piece> possibilities){
+        Check currentCheck;
+        int currentLine;
+        int currentColomn;
+        Rectangle2D currentRec ;
+        for(int i=0;i<possibilities.size();i++){
+            currentCheck=possibilities.get(i).getPosition();
+            currentLine=currentCheck.getLineNumber();
+            currentColomn=currentCheck.getColomnNumber();
+            currentRec=graphicalChecks[currentLine][currentColomn];
+            this.yellowOriginalColorFlash(currentRec,currentLine,currentColomn);           
+        }        
+    }
+    
+    public void showSelectablePath(ArrayList<Check> possibilities){
         Check currentCheck;
         int currentLine;
         int currentColomn;
@@ -125,8 +156,19 @@ public class MainWindowContent extends JPanel implements MouseListener{
             currentLine=currentCheck.getLineNumber();
             currentColomn=currentCheck.getColomnNumber();
             currentRec=graphicalChecks[currentLine][currentColomn];
-            this.yellowOriginalColorFlash(currentRec,currentLine,currentColomn);            
+            this.blueOriginalColorFlash(currentRec,currentLine,currentColomn);           
         }        
+    }
+    
+    public int[] chooseCheck() throws InterruptedException{
+        while((playerInputCheckLine==-1)&&(playerInputCheckColomn==-1)){            
+            System.out.print("");
+        }
+        int[] result = {playerInputCheckLine,playerInputCheckColomn};
+        playerInputCheckLine=-1;
+        playerInputCheckColomn=-1;
+        return result;
+        
     }
 
     public ArrayList<Piece> getBlackPieces() {
@@ -157,7 +199,12 @@ public class MainWindowContent extends JPanel implements MouseListener{
                 }              
             }
             if((checkLine!=-1)&&(checkColomn!=-1)){
-                JOptionPane.showMessageDialog(null,"Clicked check line "+(checkLine+1)+ " colomn "+(checkColomn+1)); 
+                playerInputCheckLine=checkLine;
+                playerInputCheckColomn=checkColomn;
+                //return result;
+                //JOptionPane.showMessageDialog(null,"Clicked check line "+(checkLine+1)+ " colomn "+(checkColomn+1)); 
+            }else{
+                //return null;
             }
         }
     }

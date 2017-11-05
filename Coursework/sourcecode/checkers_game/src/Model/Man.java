@@ -361,6 +361,7 @@ public class Man extends Piece implements Serializable{
     public void toKing(Check arrivalCheck){
         King upgradedMan = new King(arrivalCheck,this.getColor());
         upgradedMan.setOwner(this.getOwner());
+        this.getOwner().addPiece(upgradedMan);
         this.die();
         arrivalCheck.setcheckPiece(upgradedMan);
         
