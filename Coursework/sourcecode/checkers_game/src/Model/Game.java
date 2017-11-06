@@ -5,6 +5,7 @@
  */
 package Model;
 
+import java.io.Serializable;
 import java.rmi.activation.ActivationGroup;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,12 +15,13 @@ import java.util.LinkedList;
  *
  * @author alexi_000
  */
-public class Game {
+public class Game implements Serializable{
     private Gameboard gameboard;
     private Player playerOne;
     private Player playerTwo;
     private LinkedList<Player> currentPlayer;
-    private LinkedList<HashMap> gameHistory;
+    private LinkedList<Game> gameUndoHistory;
+    private LinkedList<Game> gameRedoHistory;
     boolean gameIsOver;
 
     public Game(Gameboard gameboard, Player playerOne, Player playerTwo) {
@@ -27,7 +29,8 @@ public class Game {
         this.playerOne = playerOne;
         this.playerTwo = playerTwo;        
         currentPlayer = new LinkedList<Player>();
-        gameHistory = new LinkedList<HashMap>();
+        gameUndoHistory = new LinkedList<Game>();
+        gameRedoHistory = new LinkedList<Game>();
         this.gameIsOver = false;
         ArrayList<Piece> whitePieces = gameboard.getPiecesByColor("white");
         ArrayList<Piece> blackPieces = gameboard.getPiecesByColor("black");
@@ -43,9 +46,8 @@ public class Game {
         }
         
         currentPlayer.add((Player)DeepCopy.copy(playerOne));
-        /*HashMap<Gameboard,Player> initialisationState = new HashMap<Gameboard,Player>();
-        initialisationState.put((Gameboard)DeepCopy.copy(gameboard), null);
-        gameHistory.add(initialisationState);*/
+        gameUndoHistory.add(null);
+        gameRedoHistory.add(null);
     }
 
     public Gameboard getGameboard() {
@@ -60,7 +62,7 @@ public class Game {
         return playerTwo;
     }
 
-    private void setGameboard(Gameboard gameboard) {
+    public void setGameboard(Gameboard gameboard) {
         this.gameboard = gameboard;
     }
 
@@ -81,10 +83,6 @@ public class Game {
         }
         
     }
-
-    public HashMap<Gameboard,Player> getCurrentGameboardHistory() {
-        return gameHistory.getLast();
-    }
     
     public void nextPlayer(){
         if(this.getCurrentPlayer().getName().equals(playerOne.getName())){
@@ -95,12 +93,36 @@ public class Game {
     }
     
     public void addGameboardHistory(){
-        Gameboard copyGameboard = (Gameboard)DeepCopy.copy(this.getGameboard());
-        Player copyPlayer = (Player)DeepCopy.copy(this.getCurrentPlayer());
-        HashMap<Gameboard,Player> newGameHistory = new HashMap<Gameboard,Player>();
-        newGameHistory.put(copyGameboard, copyPlayer);
-        gameHistory.add(newGameHistory);
+        gameUndoHistory.add((Game)DeepCopy.copy(this));
     }
+    
+    public Game getPreviousGame(){
+        if(this.gameUndoHistory.getLast()!=null){
+            this.gameRedoHistory.add(this.gameUndoHistory.getLast());
+            return this.gameUndoHistory.getLast();
+        }else{
+            return null;
+        }
+        
+    }
+    
+    public Game getNextGame(){
+        if(this.gameUndoHistory.getLast()!=null){
+            this.gameUndoHistory.add(this.gameRedoHistory.getLast());
+            return this.gameRedoHistory.getLast();
+        }else{
+            return null;
+        }
+    }
+    
+    public LinkedList<Player> getCurrentListPlayer(){
+        return this.currentPlayer;
+    }
+
+    public void setCurrentPlayer(LinkedList<Player> currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }    
+    
 
     public boolean isGameIsOver() {
         return gameIsOver;

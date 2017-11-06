@@ -5,6 +5,7 @@
  */
 package UI;
 
+import Model.Game;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -20,12 +21,15 @@ import javax.swing.JPanel;
  */
 public class MainWindowOtherContent extends JPanel {
     
-    public MainWindowOtherContent() {
+    public MainWindowOtherContent(Game currentGame) {
         setBorder(BorderFactory.createLineBorder(Color.black));
         JLabel player = new JLabel("Alexis");
         JLabel infoColor = new JLabel("You are playing with white pieces");
         JLabel infoPion = new JLabel("You have 20 pieces left");
         JButton save = new JButton("Save the game");
+        Game game=currentGame;
+        
+        
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -33,17 +37,32 @@ public class MainWindowOtherContent extends JPanel {
             }
         });
         JButton undo = new JButton("Undo last move");
-        save.addActionListener(new ActionListener() {
+        undo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                Game lastGame = game.getPreviousGame();
+                System.out.println(lastGame);
+                if(lastGame!=null){
+                    game.setCurrentPlayer(lastGame.getCurrentListPlayer());
+                    game.setGameboard(lastGame.getGameboard());
+                    
+                }else{
+                    System.err.println("UNDO returned null");
+                }
             }
         });
         JButton redo = new JButton("Redo last move");
-        save.addActionListener(new ActionListener() {
+        redo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                Game lastGame = game.getNextGame();
+                if(lastGame!=null){
+                    game.setCurrentPlayer(lastGame.getCurrentListPlayer());
+                    game.setGameboard(lastGame.getGameboard());
+                    
+                }else{
+                    System.err.println("REDO returned null");
+                }            
             }
         });
         

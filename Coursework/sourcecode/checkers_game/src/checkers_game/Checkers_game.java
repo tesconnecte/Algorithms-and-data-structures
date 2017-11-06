@@ -38,7 +38,7 @@ public class Checkers_game {
         windowAllContent.add(new MainWindowNorthContent(),BorderLayout.NORTH);
         MainWindowContent mainWindowContent = new MainWindowContent(game);
         windowAllContent.add(mainWindowContent, BorderLayout.CENTER);
-        windowAllContent.add(new MainWindowOtherContent(), BorderLayout.EAST);
+        windowAllContent.add(new MainWindowOtherContent(game), BorderLayout.EAST);
         mainWindow.add(windowAllContent);
         mainWindow.pack();
         mainWindow.setVisible(true);
@@ -51,6 +51,13 @@ public class Checkers_game {
         
         while(!game.isGameIsOver()){            
             //mainGameboard.drawGameboard();
+            /*
+            */
+            mainGameboard=game.getGameboard();
+            currentPlayer=game.getCurrentPlayer();
+            
+            /*            
+            */
             windowAllContent.refreshDisplay(game);
             currentPlayer = game.getCurrentPlayer();
             JOptionPane.showMessageDialog(windowAllContent, "It is at "+ currentPlayer.getName()+" to play");
@@ -106,13 +113,14 @@ public class Checkers_game {
                 game.setGameIsOver(true);
                 String winner;
                 if(playerOne.getPieces().isEmpty()){
-                    winner=playerOne.getName();
+                    winner=playerTwo.getName();
                 }else{
                     winner=playerOne.getName();
                 }
                 JOptionPane.showMessageDialog(null,winner+" has won !");               
             }
-                   
+            
+            System.out.println(game.getPreviousGame());     
             
         }       
         
