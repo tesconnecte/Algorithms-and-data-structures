@@ -52,6 +52,16 @@ public class MainWindowContent extends JPanel implements MouseListener{
         return new Dimension(size + offset * 2, size + offset * 2);
     }
 
+    public void setBlackPieces(ArrayList<Piece> blackPieces) {
+        this.blackPieces = blackPieces;
+    }
+
+    public void setWhitePieces(ArrayList<Piece> whitePieces) {
+        this.whitePieces = whitePieces;
+    }
+    
+    
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);

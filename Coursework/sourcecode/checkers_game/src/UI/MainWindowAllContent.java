@@ -26,7 +26,8 @@ public class MainWindowAllContent extends JPanel {
     
     public void refreshDisplay(Game game){
         game.getGameboard().drawGameboard();
-        this.getParent().getComponent(0).repaint();       
+        this.getParent().getComponent(0).repaint();
+        this.getComponent(2).repaint();
     }
     
     

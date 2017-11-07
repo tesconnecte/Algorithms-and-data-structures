@@ -54,10 +54,14 @@ public abstract class Piece implements Serializable{
         }
         
         public void die(){
-        this.getOwner().deletePiece(this);
-        this.setOwner(null);
-        this.getPosition().setcheckPiece(null);        
-        this.setPosition(null);
+            if(this.getOwner()!=null){
+                this.getOwner().deletePiece(this);
+            }            
+            this.setOwner(null);
+            if(this.getPosition()!=null){
+                this.getPosition().setcheckPiece(null);
+            }                    
+            this.setPosition(null);
     }
 
 }

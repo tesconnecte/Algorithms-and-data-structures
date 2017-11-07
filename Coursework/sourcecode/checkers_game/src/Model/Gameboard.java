@@ -22,6 +22,21 @@ public class Gameboard implements Serializable{
             }
         }
         
+        public void emptyGameboard(){
+            Check currentCheck;
+            Piece currentPiece;
+            for(int i=0;i<10;i++){
+                for(int j=0;j<10;j++){
+                    currentCheck=this.getCheckByLineColomn(i, j);
+                    currentPiece=currentCheck.getcheckPiece();
+                    if(currentPiece!=null){
+                        currentPiece.die();
+                        currentCheck.setcheckPiece(null);
+                    }                    
+                }
+            }
+        }
+        
         
 
 	public int getNbLines() {
@@ -49,7 +64,7 @@ public class Gameboard implements Serializable{
                     currentCheck = this.getCheckByLineColomn(i, j);
                     if(currentCheck.isOccupied()){
                         currentPiece = currentCheck.getcheckPiece();
-                        if(currentPiece.getColor()==color){
+                        if(currentPiece.getColor().equals(color)){
                             colorPieces.add(currentPiece);
                         }                        
                     }
@@ -82,7 +97,7 @@ public class Gameboard implements Serializable{
                 for(int j=0;j<this.getNbColomns();j++){                    
                     System.out.print("|");
                     if(checksList[i][j].isOccupied()==true){
-                        if(checksList[i][j].getcheckPiece().getColor()=="black"){
+                        if(checksList[i][j].getcheckPiece().getColor().equals("black")){
                             if(checksList[i][j].getcheckPiece() instanceof King){
                                 System.out.print("KB");
                             }else {

@@ -26,38 +26,27 @@ public class Exercise1 {
 	FileReader fr = null;
         
         try {
+            fr = new FileReader(FILENAME);
+            br = new BufferedReader(fr);
+            String sCurrentLine;
+            while ((sCurrentLine = br.readLine()) != null) {
+                    textFile+=sCurrentLine;
+            }
 
-			//br = new BufferedReader(new FileReader(FILENAME));
-			fr = new FileReader(FILENAME);
-			br = new BufferedReader(fr);
+	} catch (IOException e) {
+            e.printStackTrace();
+	} finally {
+            try {
+                if (br != null)
+                    br.close();
+                    if (fr != null)
+                        fr.close();
 
-			String sCurrentLine;
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
 
-			while ((sCurrentLine = br.readLine()) != null) {
-				textFile+=sCurrentLine;
-			}
-
-		} catch (IOException e) {
-
-			e.printStackTrace();
-
-		} finally {
-
-			try {
-
-				if (br != null)
-					br.close();
-
-				if (fr != null)
-					fr.close();
-
-			} catch (IOException ex) {
-
-				ex.printStackTrace();
-
-			}
-
-		}
+        }
         
         return textFile; 
 

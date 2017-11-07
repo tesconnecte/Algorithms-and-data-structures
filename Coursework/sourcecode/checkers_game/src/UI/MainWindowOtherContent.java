@@ -10,6 +10,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -20,32 +22,45 @@ import javax.swing.JPanel;
  * @author alexi
  */
 public class MainWindowOtherContent extends JPanel {
+    private JLabel infoPion;
+    private Game game;
     
     public MainWindowOtherContent(Game currentGame) {
+        game=currentGame;
         setBorder(BorderFactory.createLineBorder(Color.black));
-        JLabel player = new JLabel("Alexis");
-        JLabel infoColor = new JLabel("You are playing with white pieces");
-        JLabel infoPion = new JLabel("You have 20 pieces left");
+        JLabel player = new JLabel(game.getPlayerOne().getName());
+        JLabel infoColor = new JLabel("You are playing with black pieces");
+        infoPion = new JLabel("You have "+game.getPlayerOne().getPieces().size()+" pieces left");
         JButton save = new JButton("Save the game");
-        Game game=currentGame;
+        
         
         
         save.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            public void actionPerformed(ActionEvent e) {               
+            
+                try {
+                    game.saveGame();
+                } catch (FileNotFoundException ex) {
+                    System.err.println(ex);
+                } catch (UnsupportedEncodingException ex) {
+                    System.err.println(ex);
+                }
             }
         });
         JButton undo = new JButton("Undo last move");
         undo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Game lastGame = game.getPreviousGame();
-                System.out.println(lastGame);
-                if(lastGame!=null){
+                Game lastGame = game.getPreviousGame();                
+                if(lastGame!=null){                    
+                    game.removeLastUndoElement();
+                    lastGame=game.getPreviousGame();
                     game.setCurrentPlayer(lastGame.getCurrentListPlayer());
                     game.setGameboard(lastGame.getGameboard());
-                    
+                    game.setPlayerOne(lastGame.getPlayerOne());
+                    game.setPlayerTwo(lastGame.getPlayerTwo());
+                    game.removeLastUndoElement();                   
                 }else{
                     System.err.println("UNDO returned null");
                 }
@@ -55,10 +70,15 @@ public class MainWindowOtherContent extends JPanel {
         redo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Game lastGame = game.getNextGame();
-                if(lastGame!=null){
-                    game.setCurrentPlayer(lastGame.getCurrentListPlayer());
-                    game.setGameboard(lastGame.getGameboard());
+                Game nextGame = game.getNextGame();
+                if(nextGame!=null){
+                    game.removeLastRedoElement();
+                    nextGame = game.getNextGame();
+                    game.setCurrentPlayer(nextGame.getCurrentListPlayer());
+                    game.setGameboard(nextGame.getGameboard());
+                    game.setPlayerOne(nextGame.getPlayerOne());
+                    game.setPlayerTwo(nextGame.getPlayerTwo());
+                    game.removeLastRedoElement();
                     
                 }else{
                     System.err.println("REDO returned null");
@@ -73,18 +93,17 @@ public class MainWindowOtherContent extends JPanel {
         this.add(undo);
         this.add(redo);
     }
-    
-    /*@Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        int totalLenght = 1000;
-        int subLenght = totalLenght / 8;
-        // Paint the board
 
-        g.setColor(Color.WHITE);
-        g.fillRect(100, 100, totalLenght, totalLenght);
-        g.setColor(Color.DARK_GRAY);
-        g.drawRect(100, 100, totalLenght, totalLenght);
-    }*/
+    public Game getGame() {
+        return game;
+    }
+    
+    
+    
+    
+    @Override
+    public void paintComponent(Graphics g) {
+        this.infoPion.setText("You have "+this.getGame().getPlayerOne().getPieces().size()+" pieces left");
+    }
     
 }

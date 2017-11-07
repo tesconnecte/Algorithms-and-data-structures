@@ -8,9 +8,13 @@ import Model.*;
 import UI.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -26,7 +30,8 @@ public class Checkers_game {
      */
     public static void main(String[] args) throws InterruptedException {
         // TODO code application logic here
-        System.out.println(" Checkers Game / Le jeu de dames\n_________________________________\n");
+        System.out.println(" Checkers Game\n_________________________________\n");
+        new FirstWindow();
         Gameboard mainGameboard = new Gameboard();
         Human playerOne = new Human("Alexis");
         AI playerTwo = new AI();
@@ -55,11 +60,19 @@ public class Checkers_game {
             */
             mainGameboard=game.getGameboard();
             currentPlayer=game.getCurrentPlayer();
+
+            for(Piece cuPiece: game.getPlayerOne().getPieces()){
+                cuPiece.setPosition(mainGameboard.getCheckByLineColomn(cuPiece.getPosition().getLineNumber(), cuPiece.getPosition().getColomnNumber()));
+            }
             
+            for(Piece cuPiece: game.getPlayerTwo().getPieces()){
+                cuPiece.setPosition(mainGameboard.getCheckByLineColomn(cuPiece.getPosition().getLineNumber(), cuPiece.getPosition().getColomnNumber()));
+            }
+            mainWindowContent.setBlackPieces(mainGameboard.getPiecesByColor("black"));
+            mainWindowContent.setWhitePieces(mainGameboard.getPiecesByColor("white"));
             /*            
             */
             windowAllContent.refreshDisplay(game);
-            currentPlayer = game.getCurrentPlayer();
             JOptionPane.showMessageDialog(windowAllContent, "It is at "+ currentPlayer.getName()+" to play");
             if(currentPlayer instanceof Human){
                 ArrayList<Piece> movablePiece = ((Human) currentPlayer).choosePieceToMove();
@@ -90,9 +103,9 @@ public class Checkers_game {
                         }                   
                     }                    
                 }
-                
+
                 if(currentMoves.size()>1){
-                   pieceToMove.riffleMove(currentMoves);
+                    pieceToMove.riffleMove(currentMoves);
                 } else {
                     pieceToMove.move(currentMoves.get(0));                    
                 }
@@ -104,7 +117,7 @@ public class Checkers_game {
                 currentPlayer.playOnce();
             }
             
-            game.addGameboardHistory();
+            //game.addGameboardHistory();
             game.nextPlayer();
             
             
@@ -119,9 +132,6 @@ public class Checkers_game {
                 }
                 JOptionPane.showMessageDialog(null,winner+" has won !");               
             }
-            
-            System.out.println(game.getPreviousGame());     
-            
         }       
         
     }
