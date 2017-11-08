@@ -55,6 +55,16 @@ public class Game implements Serializable{
         
         currentPlayer.add((Player)DeepCopy.copy(playerOne));
     }
+    
+    public Game(){
+        this.gameboard = gameboard;
+        this.playerOne = null;
+        this.playerTwo = null;        
+        currentPlayer = new LinkedList<Player>();
+        gameUndoHistory = new LinkedList<Game>();
+        gameRedoHistory = new LinkedList<Game>();
+        this.gameIsOver = false;
+    }
 
     public Gameboard getGameboard() {
         return gameboard;
@@ -165,7 +175,6 @@ public class Game implements Serializable{
             String currentWord="";
             String[] objectsStrings = new String[102];
             int objectsStringsIndex = 0;
-            String[] dictionnaryObjectWords= {"PLAYERONE","PLAYERTWO","CHECK","PIECE","MAN","KING","CURRENTPLAYER","HUMAN","AI"};
             
             for (char ch : textFile.toCharArray()){
                 if(ch=='*'){
@@ -242,7 +251,7 @@ public class Game implements Serializable{
                             System.err.println("Error in game save reading : Expected attribute NAME, get "+referencedattributesNames[0]+" for PLAYERONE");
                         }
                     }else if(referencedObjectType.equals("AI")){
-                        filePlayerOne= new AI();
+                        filePlayerOne= new AI(referencedValues[0]);
                     }else{
                         System.err.println("Error in game save reading : "+referencedObjectType+" is not a known player class");
                     }
@@ -254,7 +263,7 @@ public class Game implements Serializable{
                             System.err.println("Error in game save reading : Expected attribute NAME, get "+referencedattributesNames[0]+" for PLAYERONE");
                         }
                     }else if(referencedObjectType.equals("AI")){
-                        filePlayerTwo= new AI();
+                        filePlayerTwo= new AI(referencedValues[0]);
                     }else{
                         System.err.println("Error in game save reading : "+referencedObjectType+" is not a known player class");
                     }            
@@ -281,9 +290,11 @@ public class Game implements Serializable{
                             if((referencedattributesNames[0].equals("OWNER"))&&(referencedattributesNames[1].equals("COLOR"))&&(referencedattributesNames[2].equals("DESTINATION"))){
                                 fileMan= new Man(currentCheck,referencedValues[1],Integer.parseInt(referencedValues[2]));
                                 if(referencedValues[0].equals("PLAYERONE")){
+                                    currentCheck.setcheckPiece(fileMan);
                                     fileMan.setOwner(filePlayerOne);
                                     filePlayerOne.addPiece(fileMan);
                                 }else if(referencedValues[0].equals("PLAYERTWO")){
+                                    currentCheck.setcheckPiece(fileMan);
                                     fileMan.setOwner(filePlayerTwo);
                                     filePlayerTwo.addPiece(fileMan);
                                 }else{
@@ -296,9 +307,11 @@ public class Game implements Serializable{
                             if((referencedattributesNames[0].equals("OWNER"))&&(referencedattributesNames[1].equals("COLOR"))){
                                 fileKing= new King(currentCheck,referencedValues[1]);                                
                                 if(referencedValues[0].equals("PLAYERONE")){
+                                    currentCheck.setcheckPiece(fileKing);
                                     fileKing.setOwner(filePlayerOne);
                                     filePlayerOne.addPiece(fileKing);
                                 }else if(referencedValues[0].equals("PLAYERTWO")){
+                                    currentCheck.setcheckPiece(fileKing);
                                     fileKing.setOwner(filePlayerTwo);
                                     filePlayerTwo.addPiece(fileKing);
                                 }else{

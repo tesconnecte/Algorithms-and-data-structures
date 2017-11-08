@@ -6,8 +6,10 @@
 package checkers_game;
 import Model.*;
 import UI.*;
+import com.sun.java.accessibility.util.AWTEventMonitor;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.MouseListener;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -28,14 +30,64 @@ public class Checkers_game {
     /**
      * @param args the command line arguments
      */
+    
+    private Player playerOne;
+    private Player PlayerTwo;
+    public boolean loadGame;
+
+    public Player getPlayerOne() {
+        return playerOne;
+    }
+
+    public void setPlayerOne(Player playerOne) {
+        this.playerOne = playerOne;
+    }
+
+    public Player getPlayerTwo() {
+        return PlayerTwo;
+    }
+
+    public void setPlayerTwo(Player PlayerTwo) {
+        this.PlayerTwo = PlayerTwo;
+    }
+
+    public boolean isLoadGame() {
+        return loadGame;
+    }
+
+    public void setLoadGame(boolean loadGame) {
+        this.loadGame = loadGame;
+    }
+
+    public Checkers_game() {
+        this.playerOne = null;
+        this.PlayerTwo = null;
+        this.loadGame = false;
+    }
+    
+    
+    
+    
+    
     public static void main(String[] args) throws InterruptedException {
+        Checkers_game mainObject = new Checkers_game();
         // TODO code application logic here
         System.out.println(" Checkers Game\n_________________________________\n");
-        new FirstWindow();
+        JFrame startGame = new FirstWindow(mainObject);
+        while(((mainObject.getPlayerOne()==null)||(mainObject.getPlayerTwo()==null))&&(mainObject.isLoadGame()==false)){
+            System.out.print("");
+        }
         Gameboard mainGameboard = new Gameboard();
-        Human playerOne = new Human("Alexis");
-        AI playerTwo = new AI();
-        Game game = new Game(mainGameboard,playerOne,playerTwo);
+        Player playerOne = mainObject.getPlayerOne();
+        Player playerTwo = mainObject.getPlayerTwo();
+        Game game;
+        if(!mainObject.isLoadGame()){
+            game = new Game(mainGameboard,playerOne,playerTwo);
+        }else{
+            game = new Game();
+            game.loadGame();
+        }
+         
         JFrame mainWindow = new JFrame();
         mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         MainWindowAllContent windowAllContent = new MainWindowAllContent();
@@ -54,12 +106,11 @@ public class Checkers_game {
         HashMap<ArrayList,Integer> currentPossibleMoves = null;
         ArrayList<Check> currentMoves = null;
         
-        while(!game.isGameIsOver()){            
-            //mainGameboard.drawGameboard();
-            /*
-            */
+        while(!game.isGameIsOver()){
             mainGameboard=game.getGameboard();
             currentPlayer=game.getCurrentPlayer();
+            
+            
 
             for(Piece cuPiece: game.getPlayerOne().getPieces()){
                 cuPiece.setPosition(mainGameboard.getCheckByLineColomn(cuPiece.getPosition().getLineNumber(), cuPiece.getPosition().getColomnNumber()));
@@ -120,20 +171,18 @@ public class Checkers_game {
             //game.addGameboardHistory();
             game.nextPlayer();
             
-            
-            
-            if((playerOne.getPieces().isEmpty())||(playerTwo.getPieces().isEmpty())){
+            if((game.getPlayerOne().getPieces().isEmpty())||(game.getPlayerTwo().getPieces().isEmpty())){
                 game.setGameIsOver(true);
                 String winner;
-                if(playerOne.getPieces().isEmpty()){
-                    winner=playerTwo.getName();
+                if(game.getPlayerOne().getPieces().isEmpty()){
+                    winner=game.getPlayerTwo().getName();
                 }else{
-                    winner=playerOne.getName();
+                    winner=game.getPlayerOne().getName();
                 }
                 JOptionPane.showMessageDialog(null,winner+" has won !");               
             }
         }       
         
+
     }
-    
 }

@@ -8,6 +8,10 @@ public class AI extends Player implements Serializable{
         super("Computer");
     }
     
+    public AI(String name) {
+        super(name);
+    }
+    
     public ArrayList<Piece> getPiecesMovableWithRules() {
         Scanner keyboardUSER = new Scanner(System.in);
         int choice=0;

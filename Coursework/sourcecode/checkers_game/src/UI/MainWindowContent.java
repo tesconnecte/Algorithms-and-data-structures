@@ -38,13 +38,14 @@ public class MainWindowContent extends JPanel implements MouseListener{
     int subLenght = size / 10;
 
     public MainWindowContent(Game game) {
-        setBorder(BorderFactory.createLineBorder(Color.black));
-        graphicalChecks = new Rectangle2D[10][10];
-        blackPieces = game.getPlayerOne().getPieces();
-        whitePieces = game.getPlayerTwo().getPieces();
-        playerInputCheckLine=-1;
-        playerInputCheckColomn=-1;
-        addMouseListener(this);
+        this.setBorder(BorderFactory.createLineBorder(Color.black));
+        this.graphicalChecks = new Rectangle2D[10][10];
+        this.blackPieces = game.getPlayerOne().getPieces();
+        this.whitePieces = game.getPlayerTwo().getPieces();
+        this.playerInputCheckLine=-1;
+        this.playerInputCheckColomn=-1;        
+        this.addMouseListener(this);
+       
     }
 
     @Override
@@ -140,7 +141,7 @@ public class MainWindowContent extends JPanel implements MouseListener{
         
     }
     
-        public void greenOriginalColorFlash( int lineNumber, int colomnNumber, boolean isKing, String color){
+    public void greenOriginalColorFlash( int lineNumber, int colomnNumber, boolean isKing, String color){
         Color paintColor;
         if(color.equals("black")){
             paintColor=Color.BLACK;
@@ -218,7 +219,7 @@ public class MainWindowContent extends JPanel implements MouseListener{
     public int[] chooseCheck() throws InterruptedException{
         while((playerInputCheckLine==-1)&&(playerInputCheckColomn==-1)){            
             System.out.print("");
-        }
+        }              
         int[] result = {playerInputCheckLine,playerInputCheckColomn};
         playerInputCheckLine=-1;
         playerInputCheckColomn=-1;
