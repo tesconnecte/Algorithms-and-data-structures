@@ -81,7 +81,10 @@ public class Human extends Player implements Serializable{
         return result;
     }
 
-    /*public Piece choosePieceToMove() {
+    /*
+    *
+    * command line version of choosePieceToMove()
+    public Piece choosePieceToMove() {
         Scanner keyboardUSER = new Scanner(System.in);
         int choice=0;
         int count=1;
@@ -233,39 +236,8 @@ public class Human extends Player implements Serializable{
             return movablePiece;
         } else {
             return null;
-        }
+        }       
         
-        /*
-        
-        ArrayList<Check> checkspossibles = new ArrayList<Check>();
-        for(Piece currentPieceGNAGNA : movablePiece){
-            checkspossibles.add(currentPieceGNAGNA.getPosition());
-        }
-        
-        test.showSelectableCheck(checkspossibles);
-        
-        
-        if(!movablePiece.isEmpty()){
-            System.out.println("Choose the piece to move :");
-            for(Piece choicePiece : movablePiece){
-            System.out.println(count+") Line "+(choicePiece.getPosition().getLineNumber()+1)+" | Colomn "+(choicePiece.getPosition().getColomnNumber()+1));           
-            count++;            
-            }            
-            
-            while(!rightChoice){
-                System.out.println("Select an option above from 1 to "+(count-1));
-                choice=(keyboardUSER.nextInt());
-                if((choice>=1)&&(choice<count)){
-                    rightChoice=true;
-                } else {
-                    System.out.println("Wrong choice try again between 1 and "+(count-1));
-                }
-            }
-            
-            return(movablePiece.get((choice-1)));
-        }else{
-            return null;
-        }*/
     }
     
     @Override
