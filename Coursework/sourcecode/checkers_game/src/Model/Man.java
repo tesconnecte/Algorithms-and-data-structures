@@ -50,12 +50,12 @@ public class Man extends Piece implements Serializable{
             if(possibilities.getParent()!=null){
                 previousCheckOnOldGameboard = (Check)possibilities.getParent().getData();
                 previousCheckOnNewGameboard = copyGameboard.getCheckByLineColomn(previousCheckOnOldGameboard.getLineNumber(), previousCheckOnOldGameboard.getColomnNumber());
-                /*On the new copied gameboard, we copy the King to its new position*/
+                /*On the new copied gameboard, we copy the Man to its new position*/
                 previousCheckOnNewGameboard.getcheckPiece().setPosition(currentCheck);
                 currentCheck.setcheckPiece(previousCheckOnNewGameboard.getcheckPiece());
                 previousCheckOnNewGameboard.setcheckPiece(null);
                 currentMan = (Man)currentCheck.getcheckPiece();
-            }else {//1st case, King does not need to be moved
+            }else {//1st case, Man does not need to be moved
                 currentMan = (Man)currentCheck.getcheckPiece();
             }
             HashMap<Check,Gameboard> nextPossibleMoves = new HashMap<Check,Gameboard>();
